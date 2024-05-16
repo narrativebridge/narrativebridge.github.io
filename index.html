@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NarrativeBridge: Enhancing Video Captioning with Causal Narrative</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        main {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        h2 {
+            font-size: 2em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        h3 {
+            font-size: 1.5em;
+            margin-top: 30px;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            box-sizing: border-box;
+            margin: 20px 0;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+        }
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header role="banner">
+        <h1>Causal Narrative Video Captioning</h1>
+    </header>
+    <main role="main">
+        <section>
+            <h2>Datasets</h2>
+            <p>Our work introduces a novel benchmark for video captioning called Causal Narrative (CN) captions, generated using the Mixtral of experts LLM for popular datasets like MSR-VTT and MSVD.</p>
+        </section>
+        <section>
+            <h2>Motivation</h2>
+            <iframe src="motivation_figure.pdf" title="Comparison of original vs. Causal Narrative (CN) ground truth captions to illustrate the inclusion of
+            causal narrative and temporal dynamics."></iframe>
+        </section>
+        <section>
+            <h2>Architecture</h2>
+            <iframe src="architecture_figure.pdf" title="CEN Architecture and Ablation Variants."></iframe>
+        </section>
+        <section>
+            <h2>Try the Prompt</h2>
+            <textarea placeholder="You are an advanced language model tasked with generating causal narrative captions for a video. However, you cannot directly access the video itself. Instead, you will be provided with a series of captions that outline the key events and scenes in the video. Your task is to generate a concise Cause and Effect scenario, based on the information provided in the descriptive captions. Be careful, your generated Cause and Effect statements should fulfill the following requirements: 
+1. Your narrative should be grounded in the information provided by the descriptive captions. 
+2. Cause and Effect scenario is relevant. 
+3. It should not introduce any new events or details not mentioned. 
+4. Avoid implying conclusions. 
+5. Maintain temporal consistency with the provided captions. 
+6. Use plain English and direct sentences. 
+7. Cause and Effect statements each limited to a maximum of 15 words. 
+8. Do not include any additional text before or after the JSON object. 
+
+Here are the examples of Cause and Effect: 
+[Examples]: 
+[{'Cause': 'the student overslept due to a malfunctioning alarm clock', 'Effect': 'missed catching the bus to school'}, {'Cause': 'she absentmindedly skipped applying moisturizer after taking a long hot shower', 'Effect': 'her skin became dry and flaky'}, {'Cause': 'he carelessly neglected taking his prescribed allergy medication', 'Effect': 'suffered a severe sneezing fit'}, {'Cause': 'the exhausted soccer player recklessly fouled an opponent in the penalty area', 'Effect': 'the opposing team was awarded a crucial penalty kick'}, {'Cause': 'due to unforeseen road closures they found themselves stuck in heavy traffic', 'Effect': 'missed out on experiencing the opening act of the concert'}] 
+Now please generate only one Cause and Effect presented in a JSON format based on the following descriptive captions. 
+[Descriptive Captions]:
+1. 'a car crashes and guys play beer pong'
+2. 'a car driving through an open field kicking up dirt'
+3. 'a car flipping over'
+4. 'a car get wracked'
+5. 'a car is being flipped over'
+6. 'a dirt vehicle riding and rolling'
+7. 'a dune buggy flipping over'
+8. 'a four wheeler wrecking'
+9. 'a monster truck flips on its side then several young men shout while playing beer pong'
+10. 'a person drives an offroad car around a field'
+11. 'a person flipping a go kart while a crowd cheers'
+12. 'a race truck is crashing'
+13. 'a truck rolls over itself and boys cheer on a friend'
+14. 'a truck tumbles over on itself'
+15. 'a tumbler crashes on a dirt road and then a group of guys play beer pong'
+16. 'a type of monster truck crashes and men are shown celebrating'
+17. 'a vehicle flips over'
+18. 'an off road vehicle crashing'
+19. 'crashing of a car while driving'
+20. 'footage from a monster truck style event followed by a frat party'
+[Causal Narrative]:"></textarea>
+
+        </section>
+        <section>
+            <h2>Results</h2>
+            <h3>Quantitative Results</h3>
+            <table role="table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th colspan="3">MSVD</th>
+                        <th colspan="3">MSRVTT</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th>ROUGE-L</th>
+                        <th>CIDEr</th>
+                        <th>SPICE</th>
+                        <th>ROUGE-L</th>
+                        <th>CIDEr</th>
+                        <th>SPICE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>SEM-POS</td>
+                        <td>25.39</td>
+                        <td>37.16</td>
+                        <td>14.46</td>
+                        <td>20.11</td>
+                        <td>26.01</td>
+                        <td>12.09</td>
+                    </tr>
+                    <tr>
+                        <td>AKGNN</td>
+                        <td>25.11</td>
+                        <td>35.08</td>
+                        <td>14.55</td>
+                        <td>21.42</td>
+                        <td>25.90</td>
+                        <td>11.99</td>
+                    </tr>
+                    <tr>
+                        <td>GIT</td>
+                        <td>27.51</td>
+                        <td>45.63</td>
+                        <td>15.58</td>
+                        <td>24.51</td>
+                        <td>32.43</td>
+                        <td>13.70</td>
+                    </tr>
+                    <tr>
+                        <td>CEN (Ours)</td>
+                        <td>31.46</td>
+                        <td>63.51</td>
+                        <td>19.25</td>
+                        <td>27.90</td>
+                        <td>49.87</td>
+                        <td>15.76</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3>Qualitative Results</h3>
+            <iframe src="qualitative_results.pdf" title="Qualitative Results"></iframe>
+        </section>
+        <section>
+            <h2>Ablation Study</h2>
+            <table role="table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th colspan="3">MSVD</th>
+                        <th colspan="3">MSRVTT</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th>ROUGE-L</th>
+                        <th>CIDEr</th>
+                        <th>SPICE</th>
+                        <th>ROUGE-L</th>
+                        <th>CIDEr</th>
+                        <th>SPICE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Joint CEN</td>
+                        <td>30.93</td>
+                        <td>55.72</td>
+                        <td>17.04</td>
+                        <td>27.34</td>
+                        <td>45.97</td>
+                        <td>15.07</td>
+                    </tr>
+                    <tr>
+                        <td>Only <span aria-label="cause encoder">cause encoder</span></td>
+                        <td>30.72</td>
+                        <td>56.42</td>
+                        <td>18.43</td>
+                        <td>27.19</td>
+                        <td>47.10</td>
+                        <td>15.21</td>
+                    </tr>
+                    <tr>
+                        <td>Only <span aria-label="effect encoder">effect encoder</span></td>
+                        <td>30.70</td>
+                        <td>57.14</td>
+                        <td>17.89</td>
+                        <td>27.24</td>
+                        <td>45.58</td>
+                        <td>15.19</td>
+                    </tr>
+                    <tr>
+                        <td>Zero Shot v.v.</td>
+                        <td>27.16</td>
+                        <td>39.65</td>
+                        <td>14.45</td>
+                        <td>24.73</td>
+                        <td>29.76</td>
+                        <td>12.26</td>
+                    </tr>
+                    <tr>
+                        <td>Fine-tune v.v.</td>
+                        <td>31.78</td>
+                        <td>65.60</td>
+                        <td>19.39</td>
+                        <td>27.47</td>
+                        <td>47.74</td>
+                        <td>15.65</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        <section>
+            <h2>Model Weights</h2>
+            <p>Download the model weights from <a href="https://github.com/your-repo/model-weights">here</a>.</p>
+        </section>
+    </main>
+    <footer role="contentinfo" style="text-align: center; padding: 20px; background-color: #4CAF50; color: white;">
+        <p>&copy; 2024 Causal Narrative Video Captioning. All rights reserved.</p>
+    </footer>
+</body>
+</html>
