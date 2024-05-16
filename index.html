@@ -13,6 +13,7 @@
             background-color: #f5f5f5;
             color: #333;
         }
+        
         header {
             background-color: #4CAF50;
             color: white;
@@ -20,13 +21,17 @@
             text-align: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        
         main {
             padding: 20px;
+            width: 100%; /* Adjusted to 100% width */
             max-width: 1200px;
             margin: 20px auto;
             display: flex;
             flex-wrap: wrap;
+            box-sizing: border-box; /* Added box-sizing */
         }
+        
         nav {
             flex: 0 0 200px;
             background-color: #f0f2f5;
@@ -34,97 +39,35 @@
             border-radius: 5px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        
+        .nav-container {
+            width: 100%; /* Adjusted to 100% width */
+        }
+        
         nav ul {
             list-style-type: none;
             padding: 0;
             margin: 0;
         }
+        
         nav li {
             margin-bottom: 10px;
         }
+        
         nav a {
             color: #333;
             text-decoration: none;
         }
+        
         nav a:hover {
             color: #4CAF50;
         }
+        
         .content {
             flex: 1;
             padding: 0 20px;
         }
-        h1, h2, h3 {
-            color: #333;
-        }
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-        h2 {
-            font-size: 2em;
-            margin-top: 40px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 10px;
-        }
-        h3 {
-            font-size: 1.5em;
-            margin-top: 30px;
-        }
-        img {
-            width: 100%;
-            height: auto;
-            border: 2px solid #4CAF50;
-            border-radius: 5px;
-            margin: 20px 0;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin: 20px 0;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .prompt {
-            background-color: #ffff99;
-            color: black;
-            padding: 20px;
-            border-radius: 5px;
-            margin: 20px 0;
-            white-space: pre-wrap;
-        }
-        a {
-            color: #4CAF50;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .dynamic-content {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-        }
-        .dynamic-content > div {
-            flex: 0 0 48%;
-            background-color: #f0f2f5;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .dynamic-content h3 {
-            margin-top: 0;
-        }
+        
         .prompt-container {
             position: relative;
         }
@@ -157,6 +100,7 @@
             overflow-y: auto; /* Enable vertical scrolling if needed */
             white-space: pre-wrap; /* Wrap long lines */
         }
+        
         /* Adjustments for smaller screens */
         @media screen and (max-width: 768px) {
             .prompt-text {
