@@ -134,39 +134,17 @@
     <main role="main">
         <nav aria-label="Main Navigation">
             <ul>
+                <li><a href="#try-the-prompt">Try the Prompt</a></li>
                 <li><a href="#datasets">Datasets</a></li>
                 <li><a href="#motivation">Motivation</a></li>
                 <li><a href="#architecture">Architecture</a></li>
-                <li><a href="#try-the-prompt">Try the Prompt</a></li>
-                <li><a href="#quantitative-results">Quantitative Results</a></li>
+                <li><a href="#results">Quantitative Results</a></li>
                 <li><a href="#qualitative-results">Qualitative Results</a></li>
                 <li><a href="#ablation-study">Ablation Study</a></li>
                 <li><a href="#model-weights">Model Weights</a></li>
             </ul>
         </nav>
         <div class="content">
-            <section id="datasets">
-                <h2>Datasets</h2>
-                <p>Our work introduces a novel benchmark for video captioning called Causal Narrative (CN) captions, generated using the Mixtral of experts LLM for popular datasets like MSR-VTT and MSVD.</p>
-                <ul>
-                    <li><a href="https://example.com/msrvtt-dataset" target="_blank" rel="noopener noreferrer">Download MSR-VTT Dataset</a></li>
-                    <li><a href="https://example.com/msvd-dataset" target="_blank" rel="noopener noreferrer">Download MSVD Dataset</a></li>
-                </ul>
-            </section>
-            <section id="motivation">
-                <h2>Motivation</h2>
-                <figure>
-                    <img src="motivation_figure.png" alt="Comparison of original vs. Causal Narrative (CN) ground truth captions to illustrate the inclusion of causal narrative and temporal dynamics." aria-describedby="motivation-caption">
-                    <figcaption id="motivation-caption">Comparison of original vs. Causal Narrative (CN) ground truth captions to illustrate the inclusion of causal narrative and temporal dynamics.</figcaption>
-                </figure>
-            </section>
-            <section id="architecture">
-                <h2>Architecture</h2>
-                <figure>
-                    <img src="architecture_figure.png" alt="CEN Architecture and Ablation Variants." aria-describedby="architecture-caption">
-                    <figcaption id="architecture-caption">CEN Architecture and Ablation Variants.</figcaption>
-                </figure>
-            </section>
             <section id="try-the-prompt">
                 <h2>Try the Prompt</h2>
                 <p>You can also try the prompt by visiting <a href="https://chat.lmsys.org/" target="_blank" rel="noopener noreferrer">this link</a>.</p>
@@ -207,7 +185,30 @@ Now please generate only one Cause and Effect presented in a JSON format based o
 20. 'footage from a monster truck style event followed by a frat party'
 [Causal Narrative]:</div>
             </section>
-            <section id="quantitative-results">
+            <section id="datasets">
+                <h2>Datasets</h2>
+                <p>Our work introduces a novel benchmark for video captioning called Causal Narrative (CN) captions, generated using the Mixtral of experts LLM for popular datasets like MSR-VTT and MSVD.</p>
+                <ul>
+                    <li><a href="https://example.com/msrvtt-dataset" target="_blank" rel="noopener noreferrer">Download MSR-VTT Dataset</a></li>
+                    <li><a href="https://example.com/msvd-dataset" target="_blank" rel="noopener noreferrer">Download MSVD Dataset</a></li>
+                </ul>
+            </section>
+            <section id="motivation">
+                <h2>Motivation</h2>
+                <figure>
+                    <img src="motivation_figure.png" alt="Comparison of original vs. Causal Narrative (CN) ground truth captions to illustrate the inclusion of causal narrative and temporal dynamics." aria-describedby="motivation-caption">
+                    <figcaption id="motivation-caption">Comparison of original vs. Causal Narrative (CN) ground truth captions to illustrate the inclusion of causal narrative and temporal dynamics.</figcaption>
+                </figure>
+            </section>
+            <section id="architecture">
+                <h2>Architecture</h2>
+                <figure>
+                    <img src="architecture_figure.png" alt="CEN Architecture and Ablation Variants." aria-describedby="architecture-caption">
+                    <figcaption id="architecture-caption">CEN Architecture and Ablation Variants.</figcaption>
+                </figure>
+            </section>
+            
+            <section id="results">
                 <h2>Quantitative Results</h2>
                 <table role="table" aria-label="Quantitative results table for MSVD and MSRVTT datasets">
                     <thead>
