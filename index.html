@@ -157,6 +157,23 @@
             overflow-y: auto; /* Enable vertical scrolling if needed */
             white-space: pre-wrap; /* Wrap long lines */
         }
+        /* Adjustments for smaller screens */
+        @media screen and (max-width: 768px) {
+            .prompt-text {
+                width: calc(100% - 20px); /* Adjust width to leave space for the button */
+                max-width: none; /* Remove maximum width */
+                height: auto; /* Auto height */
+                margin-top: 20px; /* Reduce top margin */
+            }
+        }
+        
+        /* Adjustments for even smaller screens */
+        @media screen and (max-width: 480px) {
+            .prompt-text {
+                padding: 10px; /* Reduce padding */
+                font-size: 14px; /* Reduce font size */
+            }
+        }
 
     </style>
 </head>
