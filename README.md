@@ -1,6 +1,7 @@
 # NarrativeBridge: Enhancing Video Captioning with Causal Narrative
 
-![NarrativeBridge Banner](https://narrativebridge.github.io/)
+![NarrativeBridge Banner](https://via.placeholder.com/1280x400?text=NarrativeBridge+Banner)
+
 
 Welcome to the official website for NarrativeBridge, a groundbreaking approach to video captioning that incorporates causal narrative and temporal dynamics. This project aims to enhance the understanding and generation of video captions by capturing the underlying cause-and-effect relationships and narrative flow within videos.
 
