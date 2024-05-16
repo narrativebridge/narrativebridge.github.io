@@ -143,8 +143,9 @@
         
         .prompt-text {
             margin-top: 40px; /* Adjust to leave space for the button */
-            width: 100%;
-            height: 100%;
+            width: calc(100% - 40px); /* Adjust width to leave space for the button */
+            max-width: 800px; /* Limit maximum width */
+            height: 400px; /* Limit height */
             padding: 20px;
             box-sizing: border-box;
             border: 2px solid #4CAF50;
@@ -154,6 +155,7 @@
             font-size: 16px; /* Adjust font size */
             resize: none; /* Prevent resizing */
             overflow-y: auto; /* Enable vertical scrolling if needed */
+            white-space: pre-wrap; /* Wrap long lines */
         }
 
     </style>
@@ -388,7 +390,7 @@ Now please generate only one Cause and Effect presented in a JSON format based o
     </footer>
         <script>
         function copyPrompt() {
-            const promptText = document.querySelector('.prompt pre').textContent;
+            const promptText = document.querySelector('.prompt-text').textContent;
             navigator.clipboard.writeText(promptText)
                 .then(() => {
                     alert('Prompt text copied to clipboard!');
