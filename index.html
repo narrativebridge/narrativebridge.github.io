@@ -4,450 +4,249 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NarrativeBridge: Enhancing Video Captioning with Causal-Temporal Narrative</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
             line-height: 1.6;
-            background-color: #f5f5f5;
-            color: #333;
+            color: var(--text-color);
         }
-        header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        main {
-            padding: 20px;
-            max-width: 1200px;
-            margin: 20px auto;
-            display: flex;
-            flex-wrap: wrap;
-        }
-        nav {
-            flex: 0 0 200px;
-            background-color: #f0f2f5;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        nav ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-        nav li {
-            margin-bottom: 10px;
-        }
-        nav a {
-            color: #333;
-            text-decoration: none;
-        }
-        nav a:hover {
-            color: #4CAF50;
-        }
-        .content {
-            flex: 1;
-            padding: 0 20px;
-        }
-        h1, h2, h3 {
-            color: #333;
-        }
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-        h2 {
-            font-size: 2em;
-            margin-top: 40px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 10px;
-        }
-        h3 {
-            font-size: 1.5em;
-            margin-top: 30px;
-        }
-        img {
-            width: 100%;
-            height: auto;
-            border: 2px solid #4CAF50;
-            border-radius: 5px;
-            margin: 20px 0;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin: 20px 0;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .prompt {
-            background-color: #ffff99;
-            color: black;
-            padding: 20px;
-            border-radius: 5px;
-            margin: 20px 0;
-            white-space: pre-wrap;
-        }
-        a {
-            color: #4CAF50;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .dynamic-content {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-        }
-        .dynamic-content > div {
-            flex: 0 0 48%;
-            background-color: #f0f2f5;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .dynamic-content h3 {
-            margin-top: 0;
-        }
-        .prompt-container {
-            position: relative;
-        }
-        
-        .copy-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 5px 10px;
-            border: none;
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        
-        .prompt-text {
-            margin-top: 40px; /* Adjust to leave space for the button */
-            width: calc(100% - 40px); /* Adjust width to leave space for the button */
-            max-width: 800px; /* Limit maximum width */
-            height: 400px; /* Limit height */
-            padding: 20px;
-            box-sizing: border-box;
-            border: 2px solid #4CAF50;
-            border-radius: 5px;
-            background-color: yellow; /* Yellow background */
-            color: black; /* Black text */
-            font-size: 16px; /* Adjust font size */
-            resize: none; /* Prevent resizing */
-            overflow-y: auto; /* Enable vertical scrolling if needed */
-            white-space: pre-wrap; /* Wrap long lines */
-        }
-        /* Adjustments for smaller screens */
-        @media screen and (max-width: 768px) {
-            .prompt-text {
-                width: calc(100% - 20px); /* Adjust width to leave space for the button */
-                max-width: none; /* Remove maximum width */
-                height: auto; /* Auto height */
-                margin-top: 20px; /* Reduce top margin */
-            }
-        }
-        
-        /* Adjustments for even smaller screens */
-        @media screen and (max-width: 480px) {
-            .prompt-text {
-                padding: 10px; /* Reduce padding */
-                font-size: 14px; /* Reduce font size */
-            }
-        }
-    </style>
+        :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #ecf0f1;
+        --accent-color: #e74c3c;
+        --text-color: #333;
+    }
+
+    header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+    }
+
+    nav {
+        background-color: var(--secondary-color);
+        padding: 10px;
+    }
+
+    nav ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    nav li {
+        display: inline;
+        margin-right: 10px;
+    }
+
+    nav a {
+        color: var(--text-color);
+        text-decoration: none;
+    }
+
+    nav a:hover {
+        color: var(--accent-color);
+        text-decoration: underline;
+    }
+
+    .content {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+    }
+
+    h2 {
+        font-size: 2.5rem;
+        margin-top: 60px;
+        margin-bottom: 30px;
+        border-bottom: 2px solid var(--accent-color);
+        padding-bottom: 10px;
+    }
+
+    p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    table {
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 30px 0;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 15px;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background-color: var(--primary-color);
+        color: white;
+        text-align: left;
+    }
+
+    .download-button {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: var(--accent-color);
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+    .download-button:hover {
+        background-color: #c0392b;
+    }
+
+    footer {
+        background-color: var(--secondary-color);
+        padding: 30px 0;
+        margin-top: 60px;
+        text-align: center;
+    }
+
+    .skip-nav {
+        position: absolute;
+        left: -9999px;
+        z-index: 999;
+        padding: 1em;
+        background-color: var(--accent-color);
+        color: white;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .skip-nav:focus {
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 1;
+    }
+</style>
 </head>
 <body>
-    <header role="banner">
-        <h1 style="color: white;">NarrativeBridge: Enhancing Video Captioning with Causal-Temporal Narrative</h1>
-    </header>
-    <main role="main">
-        <nav aria-label="Main Navigation">
-            <ul>
-                <li><a href="#try-the-prompt">Try the Prompt</a></li>
-                <li><a href="#datasets">Datasets</a></li>
-                <li><a href="#motivation">Motivation</a></li>
-                <li><a href="#ctn_generation_pipeline">CTN captions Benchmark Generation</a></li>
-                <li><a href="#architecture">Architecture</a></li>
-                <li><a href="#results">Quantitative Results</a></li>
-                <li><a href="#qualitative-results">Qualitative Results</a></li>
-                <li><a href="#ablation-study">Ablation Study</a></li>
-                <li><a href="#model-weights">Model Weights</a></li>
-            </ul>
-        </nav>
-        <div class="content">
-            <section id="try-the-prompt">
-                <h2>Try the Prompt</h2>
-                <p>You can also try the prompt by visiting <a href="https://chat.lmsys.org/" target="_blank" rel="noopener noreferrer">this link</a>.</p>
-                <div class="prompt-container">
-                    <button class="copy-btn" onclick="copyPrompt()">Copy</button>
-                    <pre class="prompt-text">
-You are an advanced language model tasked with generating causal narrative captions for a video. However, you cannot directly access the video itself. Instead, you will be provided with a series of captions that outline the key events and scenes in the video. Your task is to generate a concise Cause and Effect scenario, based on the information provided in the descriptive captions. Be careful, your generated Cause and Effect statements should fulfill the following requirements: 
-1. Your narrative should be grounded in the information provided by the descriptive captions. 
-2. Cause and Effect scenario is relevant. 
-3. It should not introduce any new events or details not mentioned. 
-4. Avoid implying conclusions. 
-5. Maintain temporal consistency with the provided captions. 
-6. Use plain English and direct sentences. 
-7. Cause and Effect statements each limited to a maximum of 15 words. 
-8. Do not include any additional text before or after the JSON object. 
+    <a href="#main-content" class="skip-nav">Skip to main content</a>
+    <header>
+    <h1>NarrativeBridge: Enhancing Video Captioning with Causal-Temporal Narrative</h1>
+</header>
 
-Here are the examples of Cause and Effect: 
-[Examples]: 
-[{'Cause': 'the student overslept due to a malfunctioning alarm clock', 'Effect': 'missed catching the bus to school'}, {'Cause': 'she absentmindedly skipped applying moisturizer after taking a long hot shower', 'Effect': 'her skin became dry and flaky'}, {'Cause': 'he carelessly neglected taking his prescribed allergy medication', 'Effect': 'suffered a severe sneezing fit'}, {'Cause': 'the exhausted soccer player recklessly fouled an opponent in the penalty area', 'Effect': 'the opposing team was awarded a crucial penalty kick'}, {'Cause': 'due to unforeseen road closures they found themselves stuck in heavy traffic', 'Effect': 'missed out on experiencing the opening act of the concert'}] 
-Now please generate only one Cause and Effect presented in a JSON format based on the following descriptive captions. 
-[Descriptive Captions]:
-1. 'a car crashes and guys play beer pong'
-2. 'a car driving through an open field kicking up dirt'
-3. 'a car flipping over'
-4. 'a car get wracked'
-5. 'a car is being flipped over'
-6. 'a dirt vehicle riding and rolling'
-7. 'a dune buggy flipping over'
-8. 'a four wheeler wrecking'
-9. 'a monster truck flips on its side then several young men shout while playing beer pong'
-10. 'a person drives an offroad car around a field'
-11. 'a person flipping a go kart while a crowd cheers'
-12. 'a race truck is crashing'
-13. 'a truck rolls over itself and boys cheer on a friend'
-14. 'a truck tumbles over on itself'
-15. 'a tumbler crashes on a dirt road and then a group of guys play beer pong'
-16. 'a type of monster truck crashes and men are shown celebrating'
-17. 'a vehicle flips over'
-18. 'an off road vehicle crashing'
-19. 'crashing of a car while driving'
-20. 'footage from a monster truck style event followed by a frat party'
-[Causal Narrative]:</pre>
-                </div>
-            </section>
-            <section id="datasets">
-                <h2>Datasets</h2>
-                <p>Our work introduces a novel benchmark for video captioning called Causal-Temporal Narrative (CTN) captions, generated using the Mixtral of experts LLM for popular datasets like MSRVTT and MSVD.</p>
-                <ul>
-                    <li><a href="https://example.com/msrvtt-dataset" target="_blank" rel="noopener noreferrer">Download MSRVTT-CTN Dataset</a></li>
-                    <li><a href="https://example.com/msvd-dataset" target="_blank" rel="noopener noreferrer">Download MSVD-CTN Dataset</a></li>
-                </ul>
-            </section>
-            <section id="motivation">
-                <h2>Motivation</h2>
-                <figure>
-                    <img src="motivation_figure.png" alt="Comparison of original vs. Causal-Temporal Narrative (CTN) ground truth captions to illustrate the inclusion of causal narrative and temporal dynamics." aria-describedby="motivation-caption">
-                    <figcaption id="motivation-caption">Comparison of original vs. Causal-Temporal Narrative (CTN) ground truth captions to illustrate the inclusion of causal narrative and temporal dynamics.</figcaption>
-                </figure>
-            </section>
-            <section id="ctn_generation_pipeline">
-                <h2>CTN captions Benchmark Generation</h2>
-                <figure>
-                    <img src="caption_generation_pipeline.png" alt="CTN caption generation pipeline. θ indicates a threshold." aria-describedby="ctn_generation_pipeline-caption">
-                    <figcaption id="ctn_generation_pipeline-caption">CTN caption generation pipeline. θ indicates a threshold.</figcaption>
-                </figure>
-            </section>
-            <section id="architecture">
-                <h2>Architecture</h2>
-                <figure>
-                    <img src="architecture_figure.png" alt="CEN Architecture." aria-describedby="architecture-caption">
-                    <figcaption id="architecture-caption">The two-stage Cause-Effect Network (CEN) architecture. Stage 1: Separate Cause (E<sub>cause</sub>) and Effect (E<sub>effect</sub>) video encoders, pre-trained using CLIP-ViT, learn specialized video representations. Corresponding text encoders (T<sub>cause</sub> and T<sub>effect</sub>) encode the cause and effect portions of the CTN caption. Contrastive losses are applied to align the video and text embeddings. Stage 2: The learned cause and effect video features are encoded separately (Enc<sub>cause</sub> and Enc<sub>effect</sub>) and concatenated before being input to the decoder, which generates the final CTN caption.</figcaption>
-                </figure>
-            </section>
-            
-            <section id="results">
-                <h2>Quantitative Results</h2>
-                <table role="table" aria-label="Quantitative results table for MSVD and MSRVTT datasets" style="table-layout: fixed; width: 100%;">
-                    <thead>
-                        <tr>
-                            <th>Method</th>
-                            <th colspan="3" style="text-align: center;">MSVD</th>
-                            <th colspan="3" style="text-align: center;">MSRVTT</th>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th>ROUGE-L</th>
-                            <th>CIDEr</th>
-                            <th>SPICE</th>
-                            <th>ROUGE-L</th>
-                            <th>CIDEr</th>
-                            <th>SPICE</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>SEM-POS</td>
-                            <td>25.39</td>
-                            <td>37.16</td>
-                            <td>14.46</td>
-                            <td>20.11</td>
-                            <td>26.01</td>
-                            <td>12.09</td>
-                        </tr>
-                        <tr>
-                            <td>AKGNN</td>
-                            <td>25.11</td>
-                            <td>35.08</td>
-                            <td>14.55</td>
-                            <td>21.42</td>
-                            <td>25.90</td>
-                            <td>11.99</td>
-                        </tr>
-                        <tr>
-                            <td>GIT</td>
-                            <td>27.51</td>
-                            <td>45.63</td>
-                            <td>15.58</td>
-                            <td>24.51</td>
-                            <td>32.43</td>
-                            <td>13.70</td>
-                        </tr>
-                        <tr>
-                            <td><strong>CEN (Ours)</strong></td>
-                            <td><strong>31.46</strong></td>
-                            <td><strong>63.51</strong></td>
-                            <td><strong>19.25</strong></td>
-                            <td><strong>27.90</strong></td>
-                            <td><strong>49.87</strong></td>
-                            <td><strong>15.76</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <caption>Comparison of our CEN architecture against SOTA methods on the MSVD and MSR-VTT datasets. The best results in each category are in bold. R-L, C, and S denote ROUGE-L, CIDEr, and SPICE scores, respectively.</caption>
-            </section>
-            <section id="qualitative-results">
-                <h2>Qualitative Results</h2>
-                <figure>
-                    <img src="qualitative_results.png" alt="Qualitative examples across scenarios like video games, paper folding, soccer, and singing. CEN (Ours) captions accurately capture causal narratives and temporal sequences from ground truth, outperforming SOTA video captioning methods." aria-describedby="qualitative-caption">
-                    <figcaption id="qualitative-caption">Qualitative examples across scenarios like video games, paper folding, soccer, and singing. CEN (Ours) captions accurately capture causal narratives and temporal sequences from ground truth, outperforming SOTA video captioning methods.</figcaption>
-                </figure>
-            </section>
-            <section id="ablation-study">
-                <h2>Ablation Study</h2>
-                <table role="table" aria-label="Ablation study results table for MSVD and MSRVTT datasets" style="table-layout: fixed; width: 100%;">
-                    <thead>
-                        <tr>
-                            <th>Method</th>
-                            <th colspan="3" style="text-align: center;">MSVD</th>
-                            <th colspan="3" style="text-align: center;">MSRVTT</th>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th>ROUGE-L</th>
-                            <th>CIDEr</th>
-                            <th>SPICE</th>
-                            <th>ROUGE-L</th>
-                            <th>CIDEr</th>
-                            <th>SPICE</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Joint CE encoder</td>
-                            <td>30.93</td>
-                            <td>55.72</td>
-                            <td>17.04</td>
-                            <td>27.34</td>
-                            <td>45.97</td>
-                            <td>15.07</td>
-                        </tr>
-                        <tr>
-                            <td>Only <span aria-label="cause encoder">cause encoder</span></td>
-                            <td>30.72</td>
-                            <td>56.42</td>
-                            <td>18.43</td>
-                            <td>27.19</td>
-                            <td>47.10</td>
-                            <td>15.21</td>
-                        </tr>
-                        <tr>
-                            <td>Only <span aria-label="effect encoder">effect encoder</span></td>
-                            <td>30.70</td>
-                            <td>57.14</td>
-                            <td>17.89</td>
-                            <td>27.24</td>
-                            <td>45.58</td>
-                            <td>15.19</td>
-                        </tr>
-                        <tr>
-                            <td>Zero Shot v.v.</td>
-                            <td>27.16</td>
-                            <td>39.65</td>
-                            <td>14.45</td>
-                            <td>24.73</td>
-                            <td>29.76</td>
-                            <td>12.26</td>
-                        </tr>
-                        <tr>
-                            <td>Fine-tune v.v.</td>
-                            <td>31.78</td>
-                            <td>65.60</td>
-                            <td>19.39</td>
-                            <td>27.47</td>
-                            <td>47.74</td>
-                            <td>15.65</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <caption>Ablation study results on the MSVD and MSRVTT datasets. E<sub>JointCE</sub>, Only E<sub>cause</sub> and Only E<sub>effect</sub> are variants of our CEN architecture, while Zero Shot v.v. and Fine-tune v.v. represent cross-dataset evaluation settings. The best results in each category are in bold.</caption>
-            </section>
-            <section id="model-weights">
-                <h2>Model Weights</h2>
-                <p>Download the model weights from <a href="https://github.com/your-repo/model-weights" target="_blank" rel="noopener noreferrer">here</a>.</p>
-            </section>
-        </div>
-    </main>
-    <footer role="contentinfo" style="text-align: center; padding: 20px; background-color: #4CAF50; color: white;">
-        <p>&copy; 2024 NarrativeBridge. All rights reserved.</p>
-    </footer>
-        <script>
-        function copyPrompt() {
-            const promptText = document.querySelector('.prompt-text').textContent;
-            navigator.clipboard.writeText(promptText)
-                .then(() => {
-                    alert('Prompt text copied to clipboard!');
-                })
-                .catch((err) => {
-                    console.error('Failed to copy prompt text: ', err);
-                });
-        }
-    </script>
-    <div class="dynamic-content">
-        <div>
-            <h3>Accessibility Features</h3>
-            <p>This website exhibits accessibility features.</p>
-<!--             <ul>
-                <li>Proper use of semantic HTML elements</li>
-                <li>Descriptive alt text for images</li>
-                <li>Accessible color contrast</li>
-                <li>Keyboard navigation support</li>
-                <li>ARIA roles and labels for better screen reader support</li>
-            </ul> -->
-        </div>
-<!--         <div>
-            <h3>Dynamic Content</h3>
-            <p>This section showcases dynamic content that can be updated or replaced with new information.</p>
-            <p>Example: Latest News or Updates</p>
+<nav>
+    <ul>
+        <li><a href="#datasets" aria-current="page">Datasets</a></li>
+        <li><a href="#motivation">Motivation</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#results">Results</a></li>
+        <li><a href="#model-weights">Model Weights</a></li>
+    </ul>
+</nav>
+
+<main id="main-content">
+    <section class="content">
+        <section id="datasets">
+            <h2>Datasets</h2>
+            <p>Our work introduces a novel benchmark for video captioning called Causal-Temporal Narrative (CTN) captions, generated using the Mixtral of experts LLM for popular datasets like MSRVTT and MSVD.</p>
             <ul>
-                <li>New dataset release: </li>
-                <li>Upcoming conference: </li>
-                <li>Research paper accepted: </li>
+                <li><a href="https://example.com/msrvtt-dataset" class="download-button">Download MSRVTT-CTN Dataset</a></li>
+                <li><a href="https://example.com/msvd-dataset" class="download-button">Download MSVD-CTN Dataset</a></li>
             </ul>
-        </div> -->
-    </div>
+        </section>
+
+        <section id="motivation">
+            <h2>Motivation</h2>
+            <figure>
+                <img src="motivation_figure.png" alt="Comparison of original vs. Causal-Temporal Narrative (CTN) ground truth captions">
+                <figcaption>Comparison of original vs. Causal-Temporal Narrative (CTN) ground truth captions to illustrate the inclusion of causal narrative and temporal dynamics.</figcaption>
+            </figure>
+        </section>
+
+        <section id="architecture">
+            <h2>Architecture</h2>
+            <figure>
+                <img src="architecture_figure.png" alt="CEN Architecture">
+                <figcaption>The two-stage Cause-Effect Network (CEN) architecture.</figcaption>
+            </figure>
+        </section>
+
+        <section id="results">
+            <h2>Results</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th colspan="3">MSVD</th>
+                        <th colspan="3">MSRVTT</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th>ROUGE-L</th>
+                        <th>CIDEr</th>
+                        <th>SPICE</th>
+                        <th>ROUGE-L</th>
+                        <th>CIDEr</th>
+                        <th>SPICE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>SEM-POS</td>
+                        <td>25.39</td>
+                        <td>37.16</td>
+                        <td>14.46</td>
+                        <td>20.11</td>
+                        <td>26.01</td>
+                        <td>12.09</td>
+                    </tr>
+                    <tr>
+                        <td>AKGNN</td>
+                        <td>25.11</td>
+                        <td>35.08</td>
+                        <td>14.55</td>
+                        <td>21.42</td>
+                        <td>25.90</td>
+                        <td>11.99</td>
+                    </tr>
+                    <tr>
+                        <td>GIT</td>
+                        <td>27.51</td>
+                        <td>45.63</td>
+                        <td>15.58</td>
+                        <td>24.51</td>
+                        <td>32.43</td>
+                        <td>13.70</td>
+                    </tr>
+                    <tr>
+                        <td><strong>CEN (Ours)</strong></td>
+                        <td><strong>31.46</strong></td>
+                        <td><strong>63.51</strong></td>
+                        <td><strong>19.25</strong></td>
+                        <td><strong>27.90</strong></td>
+                        <td><strong>49.87</strong></td>
+                        <td><strong>15.76</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="model-weights">
+            <h2>Model Weights</h2>
+            <p>Download the model weights from <a href="https://github.com/your-repo/model-weights" class="download-button">here</a>.</p>
+        </section>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2024 NarrativeBridge. All rights reserved.</p>
+</footer>
 </body>
 </html>
