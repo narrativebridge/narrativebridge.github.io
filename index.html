@@ -189,7 +189,7 @@
                 <li><a href="#datasets">Datasets</a></li>
                 <li><a href="#motivation">Motivation</a></li>
                 <li><a href="#ctn_generation_pipeline">CTN captions Benchmark Generation</a></li>
-<!--                 <li><a href="#architecture">Architecture</a></li> -->
+                <li><a href="#architecture">CEN Architecture</a></li>
                 <li><a href="#results">Quantitative Results</a></li>
                 <li><a href="#qualitative-results">Qualitative Results</a></li>
 <!--                 <li><a href="#ablation-study">Ablation Study</a></li> -->
@@ -267,13 +267,13 @@ Now please generate only one Cause and Effect presented in a JSON format based o
                     <figcaption id="ctn_generation_pipeline-caption">CTN caption generation pipeline. θ indicates a threshold.</figcaption>
                 </figure>
             </section>
-<!--             <section id="architecture">
-                <h2>Architecture</h2>
+            <section id="architecture">
+                <h2>CEN Architecture</h2>
                 <figure>
                     <img src="architecture_figure.png" alt="CEN Architecture." aria-describedby="architecture-caption">
                     <figcaption id="architecture-caption">The two-stage Cause-Effect Network (CEN) architecture. Stage 1: Separate Cause (E<sub>cause</sub>) and Effect (E<sub>effect</sub>) video encoders, pre-trained using CLIP-ViT, learn specialized video representations. Corresponding text encoders (T<sub>cause</sub> and T<sub>effect</sub>) encode the cause and effect portions of the CTN caption. Contrastive losses are applied to align the video and text embeddings. Stage 2: The learned cause and effect video features are encoded separately (Enc<sub>cause</sub> and Enc<sub>effect</sub>) and concatenated before being input to the decoder, which generates the final CTN caption.</figcaption>
                 </figure>
-            </section> -->
+            </section>
             
             <section id="results">
                 <h2>Quantitative Results</h2>
