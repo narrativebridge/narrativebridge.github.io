@@ -189,6 +189,7 @@
                 <li><a href="#datasets">Datasets</a></li>
                 <li><a href="#motivation">Motivation</a></li>
                 <li><a href="#ctn_generation_pipeline">CTN captions Benchmark Generation</a></li>
+                <li><a href="#application-ctn">Labeling Unlabeled Videos</a></li>
                 <li><a href="#architecture">CEN Architecture</a></li>
                 <li><a href="#results">Quantitative Results</a></li>
                 <li><a href="#qualitative-results">Qualitative Results</a></li>
@@ -265,6 +266,13 @@ Now please generate only one Cause and Effect presented in a JSON format based o
                 <figure>
                     <img src="caption_generation_pipeline.png" alt="CTN caption generation pipeline. θ indicates a threshold." aria-describedby="ctn_generation_pipeline-caption">
                     <figcaption id="ctn_generation_pipeline-caption">CTN caption generation pipeline. θ indicates a threshold.</figcaption>
+                </figure>
+            </section>
+            <section id="application-ctn">
+                <h2>Labeling Unlabeled Videos with CTN Captions Generation</h2>
+                <figure>
+                    <img src="caption_generation_application.png" alt="CTN caption generation application." aria-describedby="ctn_generation_application">
+                    <figcaption id="ctn_generation_application">Our CTN caption generation approach can be effectively applied to label unlabeled videos. By extracting frames from an unlabeled video and generating image captions using a state-of-the-art model (e.g., GIT), we can create input for our LLM-based CTN caption generation pipeline. The LLM generates a coherent and contextually relevant CTN caption that captures the cause-effect relationships and temporal dynamics in the video, enabling accurate and informative labeling of unlabeled video content. This application demonstrates the versatility and effectiveness of our approach in streamlining the process of labeling large-scale video datasets and facilitating video understanding and retrieval tasks.</figcaption>
                 </figure>
             </section>
             <section id="architecture">
