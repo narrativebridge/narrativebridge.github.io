@@ -184,7 +184,7 @@
             position: relative;
         }
         
-        .video-container iframe {
+        .video-container video {
             position: absolute;
             top: 0;
             left: 0;
@@ -289,13 +289,19 @@ Now please generate only one Cause and Effect presented in a JSON format based o
             <section id="ctn_llm_comparison">
                 <h2>Comparison of LLMs for CTN Caption Generation</h2>
                 <div class="video-container">
-                    <iframe width="560" height="315" src="https://www.youtube.com/embed/sE6Go_cHdXQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <video width="560" height="315" controls>
+                        <source src="video_nb_llm_comp_gh.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
             </section>
             <section id="application-ctn">
                 <h2>Labeling Unlabeled Videos with CTN Captions Generation</h2>
                 <div class="video-container">
-                    <iframe width="560" height="315" src="https://www.youtube.com/embed/XXStfnpBJgM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <video width="560" height="315" controls>
+                        <source src="video2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
                 <figure>
                     <img src="ctn_generation_application.png" alt="CTN caption generation application." aria-describedby="ctn_generation_application">
@@ -373,7 +379,10 @@ Now please generate only one Cause and Effect presented in a JSON format based o
             <section id="qualitative-results">
                 <h2>Qualitative Results</h2>
                 <div class="video-container">
-                    <iframe width="560" height="315" src="https://www.youtube.com/embed/vQ3VerR_lB8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <video width="560" height="315" controls>
+                        <source src="video3.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
                 <figure>
                     <img src="qualitative_results.png" alt="Qualitative examples across scenarios like video games, paper folding, soccer, and singing. CEN (Ours) captions accurately capture causal narratives and temporal sequences from ground truth, outperforming SOTA video captioning methods." aria-describedby="qualitative-caption">
