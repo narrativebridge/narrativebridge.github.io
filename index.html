@@ -338,16 +338,16 @@ Now please generate only one Cause and Effect presented in a JSON format based o
                         </tr>
                         <tr>
                             <th></th>
-                            <th>ROUGE-L</th>
-                            <th>CIDEr</th>
-                            <th>SPICE</th>
-                            <th>ROUGE-L</th>
-                            <th>CIDEr</th>
-                            <th>SPICE</th>
+                            <th>R-L ↑</th>
+                            <th>C ↑</th>
+                            <th>S ↑</th>
+                            <th>R-L ↑</th>
+                            <th>C ↑</th>
+                            <th>S ↑</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr style="background-color: #f2f2f2;">
                             <td>SEM-POS</td>
                             <td>25.39</td>
                             <td>37.16</td>
@@ -365,7 +365,7 @@ Now please generate only one Cause and Effect presented in a JSON format based o
                             <td>25.90</td>
                             <td>11.99</td>
                         </tr>
-                        <tr>
+                        <tr style="background-color: #f2f2f2;">
                             <td>GIT</td>
                             <td>27.51</td>
                             <td>45.63</td>
@@ -375,17 +375,71 @@ Now please generate only one Cause and Effect presented in a JSON format based o
                             <td>13.70</td>
                         </tr>
                         <tr>
-                            <td><strong>CEN (Ours)</strong></td>
-                            <td><strong>31.46</strong></td>
-                            <td><strong>63.51</strong></td>
-                            <td><strong>19.25</strong></td>
-                            <td><strong>27.90</strong></td>
-                            <td><strong>49.87</strong></td>
-                            <td><strong>15.76</strong></td>
+                            <td>VideoLLaVA (Zero-shot)</td>
+                            <td>21.80</td>
+                            <td>30.55</td>
+                            <td>14.67</td>
+                            <td>19.33</td>
+                            <td>16.24</td>
+                            <td>12.49</td>
+                        </tr>
+                        <tr>
+                            <td>VideoLLaVA (LoRA FT)</td>
+                            <td>24.56</td>
+                            <td>34.98</td>
+                            <td>15.41</td>
+                            <td>21.21</td>
+                            <td>18.97</td>
+                            <td>13.28</td>
+                        </tr>
+                        <tr>
+                            <td>VideoLLaVA (Simple FT)</td>
+                            <td>25.61</td>
+                            <td>36.12</td>
+                            <td>16.09</td>
+                            <td>22.18</td>
+                            <td>19.98</td>
+                            <td>13.07</td>
+                        </tr>
+                        <tr style="background-color: #f2f2f2;">
+                            <td>ShareGPT4Video (Zero-shot)</td>
+                            <td>21.66</td>
+                            <td>27.06</td>
+                            <td>14.06</td>
+                            <td>20.27</td>
+                            <td>17.08</td>
+                            <td>12.21</td>
+                        </tr>
+                        <tr style="background-color: #f2f2f2;">
+                            <td>ShareGPT4Video (LoRA FT)</td>
+                            <td>24.39</td>
+                            <td>30.72</td>
+                            <td>14.83</td>
+                            <td>22.09</td>
+                            <td>19.83</td>
+                            <td>13.02</td>
+                        </tr>
+                        <tr style="background-color: #f2f2f2;">
+                            <td>ShareGPT4Video (Simple FT)</td>
+                            <td>25.32</td>
+                            <td>31.67</td>
+                            <td>14.92</td>
+                            <td>23.01</td>
+                            <td>20.76</td>
+                            <td>13.28</td>
+                        </tr>
+                        <tr style="background-color: #e6f7ff; font-weight: bold;">
+                            <td>CEN (Ours)</td>
+                            <td>31.46</td>
+                            <td>63.51</td>
+                            <td>19.25</td>
+                            <td>27.90</td>
+                            <td>49.87</td>
+                            <td>15.76</td>
                         </tr>
                     </tbody>
                 </table>
-                <caption>Comparison of our CEN architecture against SOTA methods on the MSVD and MSR-VTT datasets. The best results in each category are in bold. R-L, C, and S denote ROUGE-L, CIDEr, and SPICE scores, respectively.</caption>
+                <caption>Comparison of our CEN architecture against SOTA methods on the MSVD and MSR-VTT datasets. The best results in each category are highlighted. R-L, C, and S denote ROUGE-L, CIDEr, and SPICE scores, respectively. ↑ indicates higher is better.</caption>
             </section>
             <section id="qualitative-results">
                 <h2>Qualitative Results</h2>
