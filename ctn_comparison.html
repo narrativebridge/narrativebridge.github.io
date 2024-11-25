@@ -55,29 +55,19 @@
             margin: 15px 0;
             border-radius: 4px;
         }
-        .video-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin: 20px 0;
-        }
         .video-container {
             background: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin: 20px 0;
         }
         .platform-info {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .platform-card {
-            flex: 1;
             background: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
         }
         h2 {
             color: #4CAF50;
@@ -109,36 +99,15 @@
             background-color: #4CAF50;
             color: white;
         }
-        .observation-list {
-            list-style: none;
-            padding: 0;
-        }
-        .observation-list li {
-            margin-bottom: 10px;
-            padding-left: 20px;
-            position: relative;
-        }
-        .observation-list li:before {
-            content: "•";
-            color: #4CAF50;
-            font-weight: bold;
-            position: absolute;
-            left: 0;
-        }
-        @media (max-width: 768px) {
-            .video-grid {
-                grid-template-columns: 1fr;
-            }
-            .platform-info {
-                flex-direction: column;
-            }
-        }
         footer {
             background-color: #4CAF50;
             color: white;
             text-align: center;
             padding: 20px 0;
             margin-top: 40px;
+        }
+        .example-block {
+            margin-bottom: 40px;
         }
     </style>
 </head>
@@ -156,64 +125,151 @@
     <div class="container">
         <section class="analysis-section">
             <h2>Experimental Setup</h2>
-            <p>We analyze how different approaches to combining cause and effect in CTN captions affect AI video generation. This investigation uses free AI video generation platforms to visualize the impact of caption structure on temporal and causal understanding.</p>
-
             <div class="platform-info">
-                <div class="platform-card">
-                    <h3>EasyVid Platform</h3>
-                    <p>An AI video generation platform that adapts input text for storytelling while maintaining narrative flow.</p>
-                    <a href="https://easyvid.app/create" target="_blank" rel="noopener noreferrer">Platform Link →</a>
-                </div>
-                <div class="platform-card">
-                    <h3>Kapwing Platform</h3>
-                    <p>A video creation platform that maintains strict adherence to input text structure.</p>
-                    <a href="https://kapwing.com/" target="_blank" rel="noopener noreferrer">Platform Link →</a>
-                </div>
-            </div>
-
-            <div class="caption-box">
-                <h3>Input Captions</h3>
-                <div class="highlight">
-                    <strong>Concatenated Version:</strong>
-                    <p>"a car drove recklessly through an open field flipping over the car was severely damaged and a group of guys started playing beer pong"</p>
-                </div>
-                <div class="highlight">
-                    <strong>LLM Fused Version:</strong>
-                    <p>"A car flipped while driving recklessly through a field, then some guys started playing beer pong."</p>
-                </div>
+                <h3>Kapwing Platform</h3>
+                <p>A video creation platform that maintains strict adherence to input text structure.</p>
+                <a href="https://kapwing.com/" target="_blank" rel="noopener noreferrer">Platform Link →</a>
             </div>
         </section>
 
         <section class="analysis-section">
-            <h2>Video Generation Analysis</h2>
+            <h2>Examples and Analysis</h2>
             
-            <div class="video-grid">
-                <!-- EasyVid Results -->
-                <div class="video-container">
-                    <h3>EasyVid Generation</h3>
-                    <h4>Concatenated Input</h4>
-                    <video width="100%" controls>
-                        <source src="easyvid_concat.mp4.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                    <h4>LLM Fused Input</h4>
-                    <video width="100%" controls>
-                        <source src="easyvid_llm.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+            <!-- Example 1 -->
+            <div class="example-block">
+                <div class="caption-box">
+                    <h3>Example 1 - Car Incident</h3>
+                    <div class="highlight">
+                        <strong>Concatenated:</strong>
+                        <p>"a car drove recklessly through an open field flipping over the car was severely damaged and a group of guys started playing beer pong"</p>
+                    </div>
+                    <div class="highlight">
+                        <strong>LLM Fused:</strong>
+                        <p>"A car flipped while driving recklessly through a field, then some guys started playing beer pong."</p>
+                    </div>
                 </div>
 
-                <!-- Kapwing Results -->
                 <div class="video-container">
-                    <h3>Kapwing Generation</h3>
-                    <h4>Concatenated Input</h4>
+                    <h4>Concatenated Version</h4>
                     <video width="100%" controls>
                         <source src="kapwing_concat.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
-                    <h4>LLM Fused Input</h4>
+                    <h4>LLM Fused Version</h4>
                     <video width="100%" controls>
                         <source src="kapwing_llm.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+
+            <!-- Example 2 -->
+            <div class="example-block">
+                <div class="caption-box">
+                    <h3>Example 2 - Game Fatality</h3>
+                    <div class="highlight">
+                        <strong>Concatenated:</strong>
+                        <p>"a player performs a fatality move in mortal kombat another character is killed in the game"</p>
+                    </div>
+                    <div class="highlight">
+                        <strong>LLM Fused:</strong>
+                        <p>"A player performs a fatality move in Mortal Kombat, killing another character."</p>
+                    </div>
+                </div>
+
+                <div class="video-container">
+                    <h4>Concatenated Version</h4>
+                    <video width="100%" controls>
+                        <source src="kapwing_concat_1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <h4>LLM Fused Version</h4>
+                    <video width="100%" controls>
+                        <source src="kapwing_llm_1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+
+            <!-- Example 3 -->
+            <div class="example-block">
+                <div class="caption-box">
+                    <h3>Example 3 - Paper Airplane</h3>
+                    <div class="highlight">
+                        <strong>Concatenated:</strong>
+                        <p>"a man is folding a piece of paper a paper airplane is being created"</p>
+                    </div>
+                    <div class="highlight">
+                        <strong>LLM Fused:</strong>
+                        <p>"A man folds a piece of paper into a paper airplane."</p>
+                    </div>
+                </div>
+
+                <div class="video-container">
+                    <h4>Concatenated Version</h4>
+                    <video width="100%" controls>
+                        <source src="kapwing_concat_2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <h4>LLM Fused Version</h4>
+                    <video width="100%" controls>
+                        <source src="kapwing_llm_2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+
+            <!-- Example 4 -->
+            <div class="example-block">
+                <div class="caption-box">
+                    <h3>Example 4 - Soccer Goal</h3>
+                    <div class="highlight">
+                        <strong>Concatenated:</strong>
+                        <p>"a soccer player kicked the ball with precision the ball successfully went into the goal"</p>
+                    </div>
+                    <div class="highlight">
+                        <strong>LLM Fused:</strong>
+                        <p>"A soccer player kicks the ball precisely into the goal."</p>
+                    </div>
+                </div>
+
+                <div class="video-container">
+                    <h4>Concatenated Version</h4>
+                    <video width="100%" controls>
+                        <source src="kapwing_concat_3.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <h4>LLM Fused Version</h4>
+                    <video width="100%" controls>
+                        <source src="kapwing_llm_3.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+
+            <!-- Example 5 -->
+            <div class="example-block">
+                <div class="caption-box">
+                    <h3>Example 5 - Stage Performance</h3>
+                    <div class="highlight">
+                        <strong>Concatenated:</strong>
+                        <p>"a boy decided to perform on stage the audience watched and listened to his singing"</p>
+                    </div>
+                    <div class="highlight">
+                        <strong>LLM Fused:</strong>
+                        <p>"A boy performs on stage, singing to the audience."</p>
+                    </div>
+                </div>
+
+                <div class="video-container">
+                    <h4>Concatenated Version</h4>
+                    <video width="100%" controls>
+                        <source src="kapwing_concat_4.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <h4>LLM Fused Version</h4>
+                    <video width="100%" controls>
+                        <source src="kapwing_llm_4.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
                 </div>
@@ -256,7 +312,7 @@
 
             <div class="highlight">
                 <h3>Impact on AI Video Generation</h3>
-                <p>The concatenated approach leads to more accurate representation of temporal sequence and causal relationships in AI-generated videos, as demonstrated by both platforms. This validates our choice of maintaining explicit temporal-causal structure in CTN captions.</p>
+                <p>The concatenated approach consistently leads to more accurate representation of temporal sequence and causal relationships across all examples. This further validates our choice of maintaining explicit temporal-causal structure in CTN captions.</p>
             </div>
         </section>
     </div>
