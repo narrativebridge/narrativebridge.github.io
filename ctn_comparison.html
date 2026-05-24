@@ -3,317 +3,755 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analysis of CTN Impact in AI Video Generation - NarrativeBridge</title>
+    <title>CTN Effect Analysis — NarrativeBridge</title>
+    <meta name="description" content="Analysis of CTN Caption Structure: concatenated vs. LLM-fused phrasing and their effect on AI video generation.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --bg: #f6f1e8;
+            --bg-soft: #efe8db;
+            --bg-card: #fbf7ef;
+            --ink: #1b1a17;
+            --ink-soft: #4a4640;
+            --ink-mute: #807a72;
+            --rule: #d8cfbf;
+            --accent: #9b3a1f;
+            --accent-soft: #c25a36;
+            --accent-tint: #f3d9cb;
+            --highlight: #f7e9a8;
+            --serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+            --body: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+            --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+            --maxw: 1040px;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
         body {
-            font-family: 'Arial', sans-serif;
             margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            background-color: #f5f5f5;
-            color: #333;
+            font-family: var(--body);
+            font-size: 18px;
+            line-height: 1.65;
+            color: var(--ink);
+            background: var(--bg);
+            background-image:
+                radial-gradient(circle at 12% 8%, rgba(155, 58, 31, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 92% 88%, rgba(155, 58, 31, 0.03) 0%, transparent 45%);
+            background-attachment: fixed;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
         }
-        header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
+
+        /* Subtle paper grain */
+        body::before {
+            content: "";
+            position: fixed; inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.35;
+            mix-blend-mode: multiply;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
         }
-        nav {
-            background-color: #45a049;
-            padding: 10px 0;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        nav a {
-            color: white;
+
+        a {
+            color: var(--accent);
             text-decoration: none;
-            padding: 10px 20px;
-            margin: 0 10px;
-            border-radius: 4px;
-            transition: background-color 0.3s;
+            border-bottom: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+            transition: border-color 0.2s ease, color 0.2s ease;
         }
-        nav a:hover {
-            background-color: #3d8b40;
+        a:hover {
+            color: var(--accent-soft);
+            border-bottom-color: var(--accent);
         }
-        .container {
-            max-width: 1200px;
+
+        /* ============ TOP BAR ============ */
+        .topbar {
+            position: sticky; top: 0; z-index: 50;
+            background: color-mix(in srgb, var(--bg) 88%, transparent);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--rule);
+        }
+        .topbar-inner {
+            max-width: var(--maxw);
             margin: 0 auto;
-            padding: 20px;
-        }
-        .analysis-section {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .platform-info {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-        h2 {
-            color: #4CAF50;
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        h3 {
-            color: #333;
-            margin-top: 20px;
-        }
-        .example-block {
-            margin-bottom: 40px;
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .caption-flex {
+            padding: 14px 28px;
             display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            font-family: var(--serif);
         }
-        .caption-flex .highlight {
-            flex: 1;
-            margin: 0;
-            background-color: #e8f5e9;
-            padding: 15px;
+        .topbar-brand {
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            font-size: 17px;
+            display: flex; align-items: center; gap: 10px;
+            border: none;
+            color: var(--ink);
+        }
+        .topbar-brand .mark {
+            display: inline-block;
+            width: 22px; height: 22px;
+            background: var(--accent);
             border-radius: 4px;
+            position: relative;
+            transform: rotate(-8deg);
         }
-        .video-flex {
-            display: flex;
+        .topbar-brand .mark::after {
+            content: "";
+            position: absolute;
+            inset: 4px;
+            border: 1.5px solid var(--bg);
+            border-radius: 2px;
+        }
+        .topbar-nav {
+            display: flex; gap: 22px;
+            font-size: 14px;
+            font-family: var(--body);
+            font-weight: 500;
+        }
+        .topbar-nav a {
+            color: var(--ink-soft);
+            border: none;
+        }
+        .topbar-nav a:hover { color: var(--accent); }
+        .topbar-nav a.active {
+            color: var(--accent);
+        }
+        @media (max-width: 720px) {
+            .topbar-nav { display: none; }
+        }
+
+        /* ============ LAYOUT ============ */
+        main {
+            position: relative;
+            z-index: 2;
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 28px 80px;
+        }
+
+        section {
+            padding: 56px 0 8px;
+            scroll-margin-top: 80px;
+        }
+
+        /* ============ HERO ============ */
+        .hero {
+            padding: 72px 0 40px;
+        }
+        .badge-row {
+            display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+            margin-bottom: 24px;
+        }
+        .badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 12px;
+            font-family: var(--body);
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: var(--accent-tint);
+            border-radius: 999px;
+        }
+        .badge.subtle {
+            color: var(--ink-soft);
+            background: var(--bg-soft);
+        }
+        .badge .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--accent);
+        }
+
+        h1.hero-title {
+            font-family: var(--serif);
+            font-weight: 400;
+            font-size: clamp(36px, 5.2vw, 56px);
+            line-height: 1.04;
+            letter-spacing: -0.025em;
+            margin: 0 0 18px;
+            color: var(--ink);
+            font-variation-settings: "opsz" 144;
+        }
+        h1.hero-title .emph {
+            font-style: italic;
+            font-weight: 400;
+            color: var(--accent);
+        }
+
+        .hero-sub {
+            font-family: var(--body);
+            font-size: 19px;
+            line-height: 1.55;
+            color: var(--ink-soft);
+            max-width: 720px;
+            margin: 0 0 24px;
+        }
+
+        .back-link {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 14px;
+            font-family: var(--body);
+            color: var(--ink-mute);
+            border-bottom: 1px solid transparent;
+            margin-bottom: 24px;
+        }
+        .back-link:hover {
+            color: var(--accent);
+            border-bottom-color: transparent;
+        }
+        .back-link svg { width: 14px; height: 14px; }
+
+        /* ============ SECTION HEADINGS ============ */
+        h2 {
+            font-family: var(--serif);
+            font-weight: 500;
+            font-size: clamp(26px, 3vw, 34px);
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin: 0 0 12px;
+            color: var(--ink);
+            font-variation-settings: "opsz" 96;
+        }
+        .section-eyebrow {
+            display: inline-block;
+            font-family: var(--body);
+            font-weight: 500;
+            font-size: 12px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 14px;
+            position: relative;
+            padding-left: 28px;
+        }
+        .section-eyebrow::before {
+            content: "";
+            position: absolute;
+            left: 0; top: 50%;
+            width: 18px; height: 1px;
+            background: var(--accent);
+        }
+
+        h3 {
+            font-family: var(--serif);
+            font-weight: 500;
+            font-size: 22px;
+            letter-spacing: -0.01em;
+            margin: 0 0 18px;
+            color: var(--ink);
+        }
+        h3 .num {
+            font-family: var(--mono);
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--ink-mute);
+            letter-spacing: 0.06em;
+            margin-right: 14px;
+            vertical-align: 2px;
+        }
+
+        p { margin: 0 0 18px; }
+
+        /* ============ PLATFORM CARD ============ */
+        .platform-card {
+            background: var(--bg-card);
+            border: 1px solid var(--rule);
+            border-radius: 10px;
+            padding: 22px 24px;
+            margin: 24px 0 0;
+            display: flex; align-items: center; justify-content: space-between;
             gap: 20px;
-            margin-top: 20px;
+            flex-wrap: wrap;
         }
-        .video-wrapper {
-            flex: 1;
+        .platform-card .label {
+            font-family: var(--body);
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 6px;
         }
-        .video-wrapper h4 {
-            margin: 0 0 10px 0;
+        .platform-card .name {
+            font-family: var(--serif);
+            font-size: 22px;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            margin: 0 0 4px;
+            color: var(--ink);
         }
-        .video-wrapper video {
+        .platform-card .desc {
+            margin: 0;
+            color: var(--ink-soft);
+            font-size: 15px;
+        }
+        .platform-card a {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 9px 16px;
+            background: var(--ink);
+            color: var(--bg);
+            font-family: var(--body);
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 999px;
+            border: 1px solid var(--ink);
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+        .platform-card a:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg);
+        }
+        .platform-card a svg { width: 14px; height: 14px; }
+
+        /* ============ EXAMPLE BLOCKS ============ */
+        .example {
+            background: var(--bg-card);
+            border: 1px solid var(--rule);
+            border-radius: 12px;
+            padding: 28px 28px 24px;
+            margin-bottom: 28px;
+            box-shadow: 0 1px 0 var(--rule), 0 20px 40px -28px rgba(27, 26, 23, 0.18);
+        }
+
+        .caption-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+        .caption-card {
+            position: relative;
+            padding: 18px 18px 16px;
+            background: var(--bg-soft);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+        }
+        .caption-card.alt {
+            border-left-color: var(--ink-mute);
+        }
+        .caption-card .tag {
+            display: inline-block;
+            font-family: var(--body);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        .caption-card.alt .tag {
+            color: var(--ink-mute);
+        }
+        .caption-card p {
+            margin: 0;
+            font-family: var(--body);
+            font-size: 16px;
+            line-height: 1.55;
+            color: var(--ink);
+            font-style: italic;
+        }
+        .caption-card p::before { content: "“"; color: var(--ink-mute); margin-right: 1px; }
+        .caption-card p::after  { content: "”"; color: var(--ink-mute); margin-left: 1px; }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .video-block {
+            display: flex; flex-direction: column;
+        }
+        .video-block .vlabel {
+            display: flex; align-items: center; justify-content: space-between;
+            font-family: var(--body);
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--ink-mute);
+            margin-bottom: 10px;
+        }
+        .video-block .vchip {
+            font-family: var(--mono);
+            font-size: 10.5px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: var(--bg-soft);
+            color: var(--ink-soft);
+            letter-spacing: 0.04em;
+        }
+        .video-block .vchip.accent {
+            background: var(--accent-tint);
+            color: var(--accent);
+        }
+        .video-block video {
             width: 100%;
             height: auto;
-            max-height: 300px;
-            object-fit: contain;
+            display: block;
+            border-radius: 8px;
+            background: #000;
+            box-shadow: 0 1px 0 var(--rule), 0 14px 30px -20px rgba(27, 26, 23, 0.25);
+        }
+
+        @media (max-width: 720px) {
+            .caption-grid, .video-grid { grid-template-columns: 1fr; }
+            .example { padding: 22px 20px 20px; }
+        }
+
+        /* ============ TABLE ============ */
+        .table-wrap {
+            margin: 28px 0 16px;
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--rule);
+            background: var(--bg-card);
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            font-family: var(--body);
+            font-size: 15px;
+            min-width: 640px;
         }
-        th, td {
-            padding: 12px;
+        thead th {
+            background: transparent;
+            color: var(--ink);
+            font-family: var(--serif);
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            padding: 14px 18px;
+            border-bottom: 1.5px solid var(--ink);
         }
-        th {
-            background-color: #4CAF50;
-            color: white;
+        thead th:not(:first-child) {
+            border-left: 1px solid var(--rule);
         }
+        tbody td {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--rule);
+            color: var(--ink-soft);
+            vertical-align: top;
+        }
+        tbody td:first-child {
+            color: var(--ink);
+            font-weight: 500;
+            font-family: var(--serif);
+        }
+        tbody td:not(:first-child) {
+            border-left: 1px solid var(--rule);
+        }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover {
+            background: color-mix(in srgb, var(--accent-tint) 35%, transparent);
+        }
+
+        /* ============ IMPACT CALLOUT ============ */
+        .impact {
+            margin-top: 28px;
+            padding: 28px 28px 22px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+            position: relative;
+        }
+        .impact::before {
+            content: "✦";
+            position: absolute;
+            top: 22px; right: 24px;
+            color: var(--accent);
+            font-size: 20px;
+            opacity: 0.6;
+        }
+        .impact h3 {
+            margin: 0 0 10px;
+            font-size: 20px;
+        }
+        .impact p {
+            margin: 0;
+            color: var(--ink-soft);
+            font-size: 16px;
+            max-width: 740px;
+        }
+
+        /* ============ RULE / DIVIDER ============ */
+        .rule-ornate {
+            display: flex; align-items: center; justify-content: center;
+            gap: 14px;
+            margin: 48px 0 0;
+            color: var(--ink-mute);
+        }
+        .rule-ornate::before, .rule-ornate::after {
+            content: "";
+            height: 1px;
+            background: var(--rule);
+            flex: 1;
+            max-width: 180px;
+        }
+        .rule-ornate svg { width: 18px; height: 18px; opacity: 0.55; }
+
+        /* ============ FOOTER ============ */
         footer {
-            background-color: #4CAF50;
-            color: white;
+            position: relative;
+            z-index: 2;
+            margin-top: 80px;
+            padding: 40px 28px;
+            border-top: 1px solid var(--rule);
             text-align: center;
-            padding: 20px 0;
-            margin-top: 40px;
+            font-family: var(--body);
+            font-size: 14px;
+            color: var(--ink-mute);
         }
-        @media (max-width: 768px) {
-            .caption-flex, .video-flex {
-                flex-direction: column;
-            }
-            .video-wrapper video {
-                max-height: none;
-            }
+
+        /* ============ MOBILE ============ */
+        @media (max-width: 640px) {
+            body { font-size: 17px; }
+            main { padding: 0 20px 60px; }
+            .hero { padding: 48px 0 32px; }
+            section { padding: 44px 0 4px; }
+            .topbar-inner { padding: 12px 20px; }
+            .platform-card { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Analysis: Effects of CTN Caption Structure in AI Video Generation</h1>
+
+<!-- ============ TOP BAR ============ -->
+<div class="topbar" role="banner">
+    <div class="topbar-inner">
+        <a href="index.html" class="topbar-brand">
+            <span class="mark" aria-hidden="true"></span>
+            NarrativeBridge
+        </a>
+        <nav class="topbar-nav" aria-label="Page sections">
+            <a href="index.html">Home</a>
+            <a href="index.html#overview">Overview</a>
+            <a href="index.html#benchmark">Benchmark</a>
+            <a href="ctn_comparison.html" class="active">CTN Analysis</a>
+        </nav>
+    </div>
+</div>
+
+<main id="top">
+
+    <!-- ============ HERO ============ -->
+    <header class="hero">
+        <a href="index.html" class="back-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back to main page
+        </a>
+
+        <div class="badge-row">
+            <span class="badge"><span class="dot"></span>Supplementary</span>
+            <span class="badge subtle">CTN Caption Structure · AI Video Generation</span>
+        </div>
+
+        <h1 class="hero-title">
+            Effects of <span class="emph">CTN Caption Structure</span> in AI Video Generation
+        </h1>
+
+        <p class="hero-sub">
+            A side-by-side comparison of concatenated cause-effect prompts and LLM-fused phrasings,
+            and how each shapes the temporal and causal fidelity of generated video.
+        </p>
     </header>
 
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="index.html#overview">Overview</a>
-        <a href="index.html#benchmark">Benchmark</a>
-    </nav>
+    <!-- ============ EXPERIMENTAL SETUP ============ -->
+    <section id="setup">
+        <div class="section-eyebrow">§ I · Experimental setup</div>
+        <h2>Experimental setup.</h2>
 
-    <div class="container">
-        <section class="analysis-section">
-            <h2>Experimental Setup</h2>
-            <div class="platform-info">
-                <h3>Kapwing Platform</h3>
-                <p>A video creation platform that maintains strict adherence to input text structure.</p>
-                <a href="https://kapwing.com/" target="_blank" rel="noopener noreferrer">Platform Link →</a>
+        <div class="platform-card">
+            <div>
+                <div class="label">Platform</div>
+                <div class="name">Kapwing</div>
+                <p class="desc">A video creation platform that maintains strict adherence to input text structure.</p>
             </div>
-        </section>
+            <a href="https://kapwing.com/" target="_blank" rel="noopener noreferrer">
+                Visit platform
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            </a>
+        </div>
+    </section>
 
-        <section class="analysis-section">
-            <h2>Examples and Analysis</h2>
-            
-            <!-- Example 1 -->
-            <div class="example-block">
-                <h3>Example 1 - Car Incident</h3>
-                <div class="caption-flex">
-                    <div class="highlight">
-                        <strong>Concatenated:</strong>
-                        <p>"a car drove recklessly through an open field flipping over the car was severely damaged and a group of guys started playing beer pong"</p>
-                    </div>
-                    <div class="highlight">
-                        <strong>LLM Fused:</strong>
-                        <p>"A car flipped while driving recklessly through a field, then some guys started playing beer pong."</p>
-                    </div>
+    <!-- ============ EXAMPLES ============ -->
+    <section id="examples">
+        <div class="section-eyebrow">§ II · Side-by-side examples</div>
+        <h2>Examples and analysis.</h2>
+
+        <!-- Example 1 -->
+        <article class="example">
+            <h3><span class="num">01</span>Car Incident</h3>
+            <div class="caption-grid">
+                <div class="caption-card">
+                    <span class="tag">Concatenated</span>
+                    <p>a car drove recklessly through an open field flipping over the car was severely damaged and a group of guys started playing beer pong</p>
                 </div>
-                <div class="video-flex">
-                    <div class="video-wrapper">
-                        <h4>Concatenated Version</h4>
-                        <video controls>
-                            <source src="kapwing_concat.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                    <div class="video-wrapper">
-                        <h4>LLM Fused Version</h4>
-                        <video controls>
-                            <source src="kapwing_llm.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
+                <div class="caption-card alt">
+                    <span class="tag">LLM Fused</span>
+                    <p>A car flipped while driving recklessly through a field, then some guys started playing beer pong.</p>
                 </div>
             </div>
-
-            <!-- Example 2 -->
-            <div class="example-block">
-                <h3>Example 2 - Game Fatality</h3>
-                <div class="caption-flex">
-                    <div class="highlight">
-                        <strong>Concatenated:</strong>
-                        <p>"a player performs a fatality move in mortal kombat another character is killed in the game"</p>
-                    </div>
-                    <div class="highlight">
-                        <strong>LLM Fused:</strong>
-                        <p>"A player performs a fatality move in Mortal Kombat, killing another character."</p>
-                    </div>
+            <div class="video-grid">
+                <div class="video-block">
+                    <div class="vlabel"><span>Concatenated Version</span><span class="vchip accent">CTN</span></div>
+                    <video controls preload="metadata">
+                        <source src="kapwing_concat.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
-                <div class="video-flex">
-                    <div class="video-wrapper">
-                        <h4>Concatenated Version</h4>
-                        <video controls>
-                            <source src="kapwing_concat_1.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                    <div class="video-wrapper">
-                        <h4>LLM Fused Version</h4>
-                        <video controls>
-                            <source src="kapwing_llm_1.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
+                <div class="video-block">
+                    <div class="vlabel"><span>LLM Fused Version</span><span class="vchip">Fused</span></div>
+                    <video controls preload="metadata">
+                        <source src="kapwing_llm.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
             </div>
+        </article>
 
-            <!-- Example 3 -->
-            <div class="example-block">
-                <h3>Example 3 - Paper Airplane</h3>
-                <div class="caption-flex">
-                    <div class="highlight">
-                        <strong>Concatenated:</strong>
-                        <p>"a man is folding a piece of paper a paper airplane is being created"</p>
-                    </div>
-                    <div class="highlight">
-                        <strong>LLM Fused:</strong>
-                        <p>"A man folds a piece of paper into a paper airplane."</p>
-                    </div>
+        <!-- Example 2 -->
+        <article class="example">
+            <h3><span class="num">02</span>Game Fatality</h3>
+            <div class="caption-grid">
+                <div class="caption-card">
+                    <span class="tag">Concatenated</span>
+                    <p>a player performs a fatality move in mortal kombat another character is killed in the game</p>
                 </div>
-                <div class="video-flex">
-                    <div class="video-wrapper">
-                        <h4>Concatenated Version</h4>
-                        <video controls>
-                            <source src="kapwing_concat_2.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                    <div class="video-wrapper">
-                        <h4>LLM Fused Version</h4>
-                        <video controls>
-                            <source src="kapwing_llm_2.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
+                <div class="caption-card alt">
+                    <span class="tag">LLM Fused</span>
+                    <p>A player performs a fatality move in Mortal Kombat, killing another character.</p>
                 </div>
             </div>
-
-            <!-- Example 4 -->
-            <div class="example-block">
-                <h3>Example 4 - Soccer Goal</h3>
-                <div class="caption-flex">
-                    <div class="highlight">
-                        <strong>Concatenated:</strong>
-                        <p>"a soccer player kicked the ball with precision the ball successfully went into the goal"</p>
-                    </div>
-                    <div class="highlight">
-                        <strong>LLM Fused:</strong>
-                        <p>"A soccer player kicks the ball precisely into the goal."</p>
-                    </div>
+            <div class="video-grid">
+                <div class="video-block">
+                    <div class="vlabel"><span>Concatenated Version</span><span class="vchip accent">CTN</span></div>
+                    <video controls preload="metadata">
+                        <source src="kapwing_concat_1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
-                <div class="video-flex">
-                    <div class="video-wrapper">
-                        <h4>Concatenated Version</h4>
-                        <video controls>
-                            <source src="kapwing_concat_3.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                    <div class="video-wrapper">
-                        <h4>LLM Fused Version</h4>
-                        <video controls>
-                            <source src="kapwing_llm_3.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
+                <div class="video-block">
+                    <div class="vlabel"><span>LLM Fused Version</span><span class="vchip">Fused</span></div>
+                    <video controls preload="metadata">
+                        <source src="kapwing_llm_1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
             </div>
+        </article>
 
-            <!-- Example 5 -->
-            <div class="example-block">
-                <h3>Example 5 - Stage Performance</h3>
-                <div class="caption-flex">
-                    <div class="highlight">
-                        <strong>Concatenated:</strong>
-                        <p>"a boy decided to perform on stage the audience watched and listened to his singing"</p>
-                    </div>
-                    <div class="highlight">
-                        <strong>LLM Fused:</strong>
-                        <p>"A boy performs on stage, singing to the audience."</p>
-                    </div>
+        <!-- Example 3 -->
+        <article class="example">
+            <h3><span class="num">03</span>Paper Airplane</h3>
+            <div class="caption-grid">
+                <div class="caption-card">
+                    <span class="tag">Concatenated</span>
+                    <p>a man is folding a piece of paper a paper airplane is being created</p>
                 </div>
-                <div class="video-flex">
-                    <div class="video-wrapper">
-                        <h4>Concatenated Version</h4>
-                        <video controls>
-                            <source src="kapwing_concat_4.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                    <div class="video-wrapper">
-                        <h4>LLM Fused Version</h4>
-                        <video controls>
-                            <source src="kapwing_llm_4.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
+                <div class="caption-card alt">
+                    <span class="tag">LLM Fused</span>
+                    <p>A man folds a piece of paper into a paper airplane.</p>
                 </div>
             </div>
-        </section>
+            <div class="video-grid">
+                <div class="video-block">
+                    <div class="vlabel"><span>Concatenated Version</span><span class="vchip accent">CTN</span></div>
+                    <video controls preload="metadata">
+                        <source src="kapwing_concat_2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-block">
+                    <div class="vlabel"><span>LLM Fused Version</span><span class="vchip">Fused</span></div>
+                    <video controls preload="metadata">
+                        <source src="kapwing_llm_2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </article>
 
-        <section class="analysis-section">
-            <h2>Key Findings</h2>
+        <!-- Example 4 -->
+        <article class="example">
+            <h3><span class="num">04</span>Soccer Goal</h3>
+            <div class="caption-grid">
+                <div class="caption-card">
+                    <span class="tag">Concatenated</span>
+                    <p>a soccer player kicked the ball with precision the ball successfully went into the goal</p>
+                </div>
+                <div class="caption-card alt">
+                    <span class="tag">LLM Fused</span>
+                    <p>A soccer player kicks the ball precisely into the goal.</p>
+                </div>
+            </div>
+            <div class="video-grid">
+                <div class="video-block">
+                    <div class="vlabel"><span>Concatenated Version</span><span class="vchip accent">CTN</span></div>
+                    <video controls preload="metadata">
+                        <source src="kapwing_concat_3.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-block">
+                    <div class="vlabel"><span>LLM Fused Version</span><span class="vchip">Fused</span></div>
+                    <video controls preload="metadata">
+                        <source src="kapwing_llm_3.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </article>
+
+        <!-- Example 5 -->
+        <article class="example">
+            <h3><span class="num">05</span>Stage Performance</h3>
+            <div class="caption-grid">
+                <div class="caption-card">
+                    <span class="tag">Concatenated</span>
+                    <p>a boy decided to perform on stage the audience watched and listened to his singing</p>
+                </div>
+                <div class="caption-card alt">
+                    <span class="tag">LLM Fused</span>
+                    <p>A boy performs on stage, singing to the audience.</p>
+                </div>
+            </div>
+            <div class="video-grid">
+                <div class="video-block">
+                    <div class="vlabel"><span>Concatenated Version</span><span class="vchip accent">CTN</span></div>
+                    <video controls preload="metadata">
+                        <source src="kapwing_concat_4.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-block">
+                    <div class="vlabel"><span>LLM Fused Version</span><span class="vchip">Fused</span></div>
+                    <video controls preload="metadata">
+                        <source src="kapwing_llm_4.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <!-- ============ KEY FINDINGS ============ -->
+    <section id="findings">
+        <div class="section-eyebrow">§ III · Findings</div>
+        <h2>Key findings.</h2>
+
+        <div class="table-wrap">
             <table>
                 <thead>
                     <tr>
@@ -345,16 +783,23 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
 
-            <div class="highlight">
-                <h3>Impact on AI Video Generation</h3>
-                <p>The concatenated approach consistently leads to more accurate representation of temporal sequence and causal relationships across all examples. This further validates our choice of maintaining explicit temporal-causal structure in CTN captions.</p>
-            </div>
-        </section>
-    </div>
+        <div class="impact">
+            <h3>Impact on AI video generation.</h3>
+            <p>The concatenated approach consistently leads to more accurate representation of temporal sequence and causal relationships across all examples. This further validates our choice of maintaining explicit temporal-causal structure in CTN captions.</p>
+        </div>
 
-    <footer>
-        <p>&copy; 2024 NarrativeBridge. All rights reserved.</p>
-    </footer>
+        <div class="rule-ornate" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+    </section>
+
+</main>
+
+<footer role="contentinfo">
+    <p>&copy; 2024 NarrativeBridge. All rights reserved.</p>
+</footer>
+
 </body>
 </html>
