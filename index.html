@@ -3,232 +3,675 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://vjs.zencdn.net/7.20.3/video-js.min.css" rel="stylesheet">
-    <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
-    <title>NarrativeBridge: Enhancing Video Captioning with Causal-Temporal Narrative</title>
+    <title>NarrativeBridge — Enhancing Video Captioning with Causal-Temporal Narrative</title>
+    <meta name="description" content="NarrativeBridge: A novel approach to video captioning that encodes causal-temporal narrative through a Causal-Temporal Narrative (CTN) benchmark and a Cause-Effect Network (CEN) architecture.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --bg: #f6f1e8;
+            --bg-soft: #efe8db;
+            --bg-card: #fbf7ef;
+            --ink: #1b1a17;
+            --ink-soft: #4a4640;
+            --ink-mute: #807a72;
+            --rule: #d8cfbf;
+            --accent: #9b3a1f;
+            --accent-soft: #c25a36;
+            --accent-tint: #f3d9cb;
+            --highlight: #f7e9a8;
+            --serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+            --body: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+            --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+            --maxw: 920px;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
         body {
-            font-family: 'Arial', sans-serif;
             margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            background-color: #f5f5f5;
-            color: #333;
+            font-family: var(--body);
+            font-size: 18px;
+            line-height: 1.65;
+            color: var(--ink);
+            background: var(--bg);
+            background-image:
+                radial-gradient(circle at 12% 8%, rgba(155, 58, 31, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 92% 88%, rgba(155, 58, 31, 0.03) 0%, transparent 45%);
+            background-attachment: fixed;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
         }
-        header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+        /* Subtle paper grain */
+        body::before {
+            content: "";
+            position: fixed; inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.35;
+            mix-blend-mode: multiply;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
         }
-        main {
-            padding: 20px;
-            max-width: 1200px;
-            margin: 20px auto;
-            display: flex;
-            flex-wrap: wrap;
-        }
-        nav {
-            flex: 0 0 200px;
-            background-color: #f0f2f5;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        nav ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-        nav li {
-            margin-bottom: 10px;
-        }
-        nav a {
-            color: #333;
-            text-decoration: none;
-        }
-        nav a:hover {
-            color: #4CAF50;
-        }
-        .content {
-            flex: 1;
-            padding: 0 20px;
-        }
-        h1, h2, h3 {
-            color: #333;
-        }
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-        h2 {
-            font-size: 2em;
-            margin-top: 40px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 10px;
-        }
-        h3 {
-            font-size: 1.5em;
-            margin-top: 30px;
-        }
-        img {
-            width: 100%;
-            height: auto;
-            border: 2px solid #4CAF50;
-            border-radius: 5px;
-            margin: 20px 0;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin: 20px 0;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .prompt {
-            background-color: #ffff99;
-            color: black;
-            padding: 20px;
-            border-radius: 5px;
-            margin: 20px 0;
-            white-space: pre-wrap;
-        }
+
         a {
-            color: #4CAF50;
+            color: var(--accent);
             text-decoration: none;
+            border-bottom: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+            transition: border-color 0.2s ease, color 0.2s ease;
         }
         a:hover {
-            text-decoration: underline;
+            color: var(--accent-soft);
+            border-bottom-color: var(--accent);
         }
-        .dynamic-content {
+
+        /* ============ TOP BAR ============ */
+        .topbar {
+            position: sticky; top: 0; z-index: 50;
+            background: color-mix(in srgb, var(--bg) 88%, transparent);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--rule);
+        }
+        .topbar-inner {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            font-family: var(--serif);
+        }
+        .topbar-brand {
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            font-size: 17px;
+            display: flex; align-items: center; gap: 10px;
+            border: none;
+            color: var(--ink);
+        }
+        .topbar-brand .mark {
+            display: inline-block;
+            width: 22px; height: 22px;
+            background: var(--accent);
+            border-radius: 4px;
+            position: relative;
+            transform: rotate(-8deg);
+        }
+        .topbar-brand .mark::after {
+            content: "";
+            position: absolute;
+            inset: 4px;
+            border: 1.5px solid var(--bg);
+            border-radius: 2px;
+        }
+        .topbar-nav {
+            display: flex; gap: 22px;
+            font-size: 14px;
+            font-family: var(--body);
+            font-weight: 500;
+        }
+        .topbar-nav a {
+            color: var(--ink-soft);
+            border: none;
+        }
+        .topbar-nav a:hover { color: var(--accent); }
+        @media (max-width: 720px) {
+            .topbar-nav { display: none; }
+        }
+
+        /* ============ LAYOUT ============ */
+        main {
+            position: relative;
+            z-index: 2;
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 28px 80px;
+        }
+
+        section {
+            padding: 64px 0 8px;
+            scroll-margin-top: 80px;
+        }
+
+        /* ============ HERO ============ */
+        .hero {
+            padding: 80px 0 56px;
+            text-align: left;
+        }
+        .badge-row {
+            display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+            margin-bottom: 28px;
+        }
+        .badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 12px;
+            font-family: var(--body);
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: var(--accent-tint);
+            border-radius: 999px;
+        }
+        .badge.subtle {
+            color: var(--ink-soft);
+            background: var(--bg-soft);
+        }
+        .badge .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--accent);
+        }
+
+        h1.hero-title {
+            font-family: var(--serif);
+            font-weight: 400;
+            font-size: clamp(40px, 6vw, 64px);
+            line-height: 1.02;
+            letter-spacing: -0.025em;
+            margin: 0 0 18px;
+            color: var(--ink);
+            font-variation-settings: "opsz" 144;
+        }
+        h1.hero-title .emph {
+            font-style: italic;
+            font-weight: 400;
+            color: var(--accent);
+        }
+        h1.hero-title .amp {
+            font-style: italic;
+            color: var(--ink-mute);
+            font-weight: 300;
+        }
+
+        .hero-sub {
+            font-family: var(--body);
+            font-size: 20px;
+            line-height: 1.55;
+            color: var(--ink-soft);
+            max-width: 720px;
+            margin: 0 0 36px;
+        }
+
+        .hero-actions {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
+            gap: 10px;
+            margin-top: 8px;
         }
-        .dynamic-content > div {
-            flex: 0 0 48%;
-            background-color: #f0f2f5;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 11px 18px;
+            font-family: var(--body);
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 999px;
+            border: 1px solid var(--ink);
+            background: var(--ink);
+            color: var(--bg);
+            transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease;
         }
-        .dynamic-content h3 {
-            margin-top: 0;
+        .btn:hover {
+            transform: translateY(-1px);
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg);
         }
-        .prompt-container {
+        .btn.secondary {
+            background: transparent;
+            color: var(--ink);
+        }
+        .btn.secondary:hover {
+            background: var(--ink);
+            color: var(--bg);
+            border-color: var(--ink);
+        }
+        .btn svg {
+            width: 16px; height: 16px;
+            stroke-width: 2;
+        }
+
+        /* ============ SECTION HEADINGS ============ */
+        h2 {
+            font-family: var(--serif);
+            font-weight: 500;
+            font-size: clamp(28px, 3.4vw, 38px);
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin: 0 0 12px;
+            color: var(--ink);
+            font-variation-settings: "opsz" 96;
+        }
+        .section-eyebrow {
+            display: inline-block;
+            font-family: var(--body);
+            font-weight: 500;
+            font-size: 12px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 14px;
             position: relative;
+            padding-left: 28px;
         }
-        
-        .copy-btn {
+        .section-eyebrow::before {
+            content: "";
             position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 5px 10px;
-            border: none;
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
+            left: 0; top: 50%;
+            width: 18px; height: 1px;
+            background: var(--accent);
         }
-        
-        .prompt-text {
-            margin-top: 40px; /* Adjust to leave space for the button */
-            width: calc(100% - 40px); /* Adjust width to leave space for the button */
-            max-width: 800px; /* Limit maximum width */
-            height: 400px; /* Limit height */
-            padding: 20px;
-            box-sizing: border-box;
-            border: 2px solid #4CAF50;
-            border-radius: 5px;
-            background-color: yellow; /* Yellow background */
-            color: black; /* Black text */
-            font-size: 16px; /* Adjust font size */
-            resize: none; /* Prevent resizing */
-            overflow-y: auto; /* Enable vertical scrolling if needed */
-            white-space: pre-wrap; /* Wrap long lines */
+
+        h3 {
+            font-family: var(--serif);
+            font-weight: 500;
+            font-size: 22px;
+            letter-spacing: -0.01em;
+            margin: 32px 0 12px;
+            color: var(--ink);
         }
-        /* Adjustments for smaller screens */
-        @media screen and (max-width: 768px) {
-            .prompt-text {
-                width: calc(100% - 20px); /* Adjust width to leave space for the button */
-                max-width: none; /* Remove maximum width */
-                height: auto; /* Auto height */
-                margin-top: 20px; /* Reduce top margin */
-            }
+
+        p { margin: 0 0 18px; }
+
+        /* ============ FIGURES ============ */
+        figure {
+            margin: 28px 0 12px;
+            padding: 0;
         }
-        
-        /* Adjustments for even smaller screens */
-        @media screen and (max-width: 480px) {
-            .prompt-text {
-                padding: 10px; /* Reduce padding */
-                font-size: 14px; /* Reduce font size */
-            }
-        }
-        .video-container {
+        figure img {
             width: 100%;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            height: 0;
+            height: auto;
+            display: block;
+            border-radius: 6px;
+            background: var(--bg-card);
+            box-shadow: 0 1px 0 var(--rule), 0 20px 40px -24px rgba(27, 26, 23, 0.18);
+        }
+        figcaption {
+            margin-top: 16px;
+            padding-left: 16px;
+            border-left: 2px solid var(--accent);
+            font-family: var(--body);
+            font-size: 15px;
+            line-height: 1.55;
+            color: var(--ink-soft);
+            font-style: italic;
+        }
+
+        /* ============ VIDEO ============ */
+        .video-frame {
+            margin: 28px 0 12px;
+            border-radius: 8px;
             overflow: hidden;
-            position: relative;
+            background: #000;
+            box-shadow: 0 1px 0 var(--rule), 0 20px 40px -24px rgba(27, 26, 23, 0.25);
         }
-        
-        .video-container video {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .video-frame video {
             width: 100%;
-            height: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* ============ TABLES ============ */
+        .table-wrap {
+            margin: 28px 0 16px;
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--rule);
+            background: var(--bg-card);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--body);
+            font-size: 15px;
+            min-width: 640px;
+        }
+        thead th {
+            background: transparent;
+            color: var(--ink-mute);
+            font-weight: 500;
+            font-size: 12px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            text-align: left;
+            padding: 14px 16px;
+            border-bottom: 1.5px solid var(--ink);
+        }
+        thead tr:first-child th {
+            border-bottom: 1px solid var(--rule);
+            color: var(--ink);
+            font-family: var(--serif);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0;
+            text-transform: none;
+        }
+        thead tr:first-child th:not(:first-child) {
+            border-left: 1px solid var(--rule);
+            text-align: center;
+        }
+        tbody td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--rule);
+            color: var(--ink-soft);
+            font-variant-numeric: tabular-nums;
+        }
+        tbody td:first-child {
+            color: var(--ink);
+            font-weight: 500;
+        }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover { background: color-mix(in srgb, var(--accent-tint) 35%, transparent); }
+        tbody tr.highlight {
+            background: var(--accent-tint);
+        }
+        tbody tr.highlight td {
+            color: var(--ink);
+            font-weight: 600;
+        }
+        tbody tr.highlight td:first-child {
+            font-family: var(--serif);
+            font-weight: 600;
+        }
+        tbody tr.highlight:hover {
+            background: var(--accent-tint);
+        }
+        .table-caption {
+            margin-top: 14px;
+            padding-left: 16px;
+            border-left: 2px solid var(--accent);
+            font-family: var(--body);
+            font-size: 14px;
+            line-height: 1.55;
+            color: var(--ink-soft);
+            font-style: italic;
+        }
+
+        /* ============ PROMPT BLOCK ============ */
+        .prompt-shell {
+            margin: 24px 0 12px;
+            position: relative;
+            border: 1px solid var(--rule);
+            border-radius: 10px;
+            background: var(--bg-card);
+            overflow: hidden;
+        }
+        .prompt-head {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--bg-soft);
+            border-bottom: 1px solid var(--rule);
+        }
+        .prompt-label {
+            display: flex; align-items: center; gap: 10px;
+            font-family: var(--mono);
+            font-size: 12px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--ink-mute);
+        }
+        .prompt-dots {
+            display: flex; gap: 5px;
+        }
+        .prompt-dots span {
+            width: 9px; height: 9px; border-radius: 50%;
+            background: var(--rule);
+        }
+        .prompt-dots span:nth-child(1) { background: #d68b6a; }
+        .prompt-dots span:nth-child(2) { background: #e0b85a; }
+        .prompt-dots span:nth-child(3) { background: #9bb582; }
+        .copy-btn {
+            font-family: var(--body);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border: 1px solid var(--rule);
+            background: var(--bg-card);
+            color: var(--ink-soft);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .copy-btn:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+        .copy-btn.copied {
+            background: var(--accent);
+            color: var(--bg);
+            border-color: var(--accent);
+        }
+        .prompt-text {
+            margin: 0;
+            padding: 22px 24px;
+            max-height: 460px;
+            overflow-y: auto;
+            font-family: var(--mono);
+            font-size: 13.5px;
+            line-height: 1.65;
+            color: var(--ink);
+            white-space: pre-wrap;
+            background: var(--bg-card);
+        }
+        .prompt-text::-webkit-scrollbar { width: 10px; }
+        .prompt-text::-webkit-scrollbar-track { background: var(--bg-soft); }
+        .prompt-text::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 5px; }
+
+        /* ============ INLINE CALLOUT (benchmark download) ============ */
+        .callout-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 14px;
+            margin: 24px 0 16px;
+        }
+        .callout {
+            display: block;
+            padding: 22px 22px;
+            background: var(--bg-card);
+            border: 1px solid var(--rule);
+            border-radius: 10px;
+            transition: transform 0.15s ease, border-color 0.2s ease;
+            color: var(--ink);
+            border-bottom: 1px solid var(--rule);
+        }
+        .callout:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+            color: var(--ink);
+        }
+        .callout-eyebrow {
+            font-family: var(--body);
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        .callout-title {
+            font-family: var(--serif);
+            font-size: 19px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            letter-spacing: -0.01em;
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+        }
+        .callout-title svg {
+            width: 18px; height: 18px;
+            color: var(--ink-mute);
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+        .callout:hover .callout-title svg {
+            transform: translate(2px, -2px);
+            color: var(--accent);
+        }
+        .callout-sub {
+            font-size: 14px;
+            color: var(--ink-mute);
+        }
+
+        .license-note {
+            font-size: 14px;
+            color: var(--ink-mute);
+            padding: 14px 18px;
+            background: var(--bg-soft);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+            margin-top: 8px;
+        }
+
+        /* ============ OVERVIEW dropcap ============ */
+        .lede {
+            font-family: var(--body);
+            font-size: 19px;
+            line-height: 1.7;
+            color: var(--ink);
+        }
+        .lede::first-letter {
+            font-family: var(--serif);
+            font-weight: 500;
+            font-size: 4.2em;
+            line-height: 0.88;
+            float: left;
+            padding: 6px 12px 0 0;
+            color: var(--accent);
+            font-variation-settings: "opsz" 144;
+        }
+
+        /* ============ RULE / DIVIDER ============ */
+        .rule-ornate {
+            display: flex; align-items: center; justify-content: center;
+            gap: 14px;
+            margin: 56px 0 0;
+            color: var(--ink-mute);
+        }
+        .rule-ornate::before, .rule-ornate::after {
+            content: "";
+            height: 1px;
+            background: var(--rule);
+            flex: 1;
+            max-width: 180px;
+        }
+        .rule-ornate svg { width: 18px; height: 18px; opacity: 0.55; }
+
+        /* ============ FOOTER ============ */
+        footer {
+            position: relative;
+            z-index: 2;
+            margin-top: 80px;
+            padding: 40px 28px;
+            border-top: 1px solid var(--rule);
+            text-align: center;
+            font-family: var(--body);
+            font-size: 14px;
+            color: var(--ink-mute);
+        }
+
+        /* ============ MOBILE ============ */
+        @media (max-width: 640px) {
+            body { font-size: 17px; }
+            main { padding: 0 20px 60px; }
+            .hero { padding: 56px 0 40px; }
+            section { padding: 48px 0 4px; }
+            .topbar-inner { padding: 12px 20px; }
+            figcaption, .table-caption { padding-left: 12px; }
+            .prompt-text { padding: 18px; font-size: 13px; }
+            .btn { padding: 10px 16px; font-size: 14px; }
         }
     </style>
 </head>
 <body>
-    <header role="banner">
-        <h1 style="color: white;">NarrativeBridge: Enhancing Video Captioning with Causal-Temporal Narrative</h1>
-    </header>
-    <main role="main">
-        <nav aria-label="Main Navigation">
-            
-            <ul>
-                <li><a href="#overview">Overview</a></li>
-                <li><a href="#try-the-prompt">Try the Prompt</a></li>
-                <li><a href="#benchmark">Download Benchmarks</a></li>
-                <li><a href="#motivation">Motivation</a></li>
-                <li><a href="#ctn_generation_pipeline">CTN captions Benchmark Generation</a></li>
-                <li><a href="#ctn_llm_comparison">Comparison of LLMs for CTN Caption Generation</a></li>
-                <li><a href="#evaluation">Automatic Evaluation for CTN Caption Generation</a></li>
-                <li><a href="ctn_comparison.html">CTN Effect Analysis</a></li>
-                <li><a href="#application-ctn">Labeling Unlabeled Videos</a></li>
-                <li><a href="#architecture">CEN Architecture</a></li>
-                <li><a href="#results">Quantitative Results</a></li>
-                <li><a href="#qualitative-results">Qualitative Results</a></li>
-<!--                 <li><a href="#ablation-study">Ablation Study</a></li> -->
-                <li><a href="#model-weights">Model Weights</a></li>
-            </ul>
+
+<!-- ============ TOP BAR ============ -->
+<div class="topbar" role="banner">
+    <div class="topbar-inner">
+        <a href="#top" class="topbar-brand">
+            <span class="mark" aria-hidden="true"></span>
+            NarrativeBridge
+        </a>
+        <nav class="topbar-nav" aria-label="Page sections">
+            <a href="#overview">Overview</a>
+            <a href="#benchmark">Benchmark</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#results">Results</a>
+            <a href="#model-weights">Weights</a>
         </nav>
-        <div class="content">
-            <section id="overview">
-            <h2>Overview</h2>
-            <p>Existing video captioning benchmarks and models lack coherent representations of causal-temporal narrative, which is sequences of events linked through cause and effect, unfolding over time and driven by characters or agents. This lack of narrative restricts models’ ability to generate text descriptions that capture the causal and temporal dynamics inherent in video content. To address this gap, we propose NarrativeBridge, an approach comprising of: (1) a novel Causal-Temporal Narrative (CTN) captions benchmark generated using a large language model and few-shot prompting, explicitly encoding cause-effect temporal relationships in video descriptions, evaluated automatically to ensure caption quality and relevance and validated through human evaluation; and (2) a dedicated Cause-Effect Network (CEN) architecture with separate encoders for capturing cause and effect dynamics independently, enabling effective learning and generation of captions with causal- temporal narrative. Extensive experiments demonstrate that CEN significantly outperforms state-of-the-art models, including fine-tuned vision-language models, and is more accurate in articulating the causal and temporal aspects of video content than the second best model (GIT): 17.88 and 17.44 CIDEr on the MSVD and MSR-VTT datasets, respectively. Cross-dataset evaluations further showcase CEN’s strong generalization capabilities. The proposed framework understands and generates nuanced text descriptions with intricate causal-temporal narrative structures present in videos, addressing a critical limitation in video captioning.</p>
-            </section>
-            <section id="try-the-prompt">
-                <h2>Try the Prompt</h2>
-                <p>You can also try the example prompt used for CTN captions generation by visiting <a href="https://chat.mistral.ai/" target="_blank" rel="noopener noreferrer">this link</a>.</p>
-                <div class="prompt-container">
-                    <button class="copy-btn" onclick="copyPrompt()">Copy</button>
-                    <pre class="prompt-text">
-You are an advanced language model tasked with generating causal-temporal narrative captions for a video. However, you cannot directly access the video itself. Instead, you will be provided with a series of captions that outline the key events and scenes in the video. Your task is to generate a concise Cause and Effect scenario, based on the information provided in the descriptive captions. Be careful, your generated Cause and Effect statements should fulfill the following requirements: 
+    </div>
+</div>
+
+<main id="top">
+
+    <!-- ============ HERO ============ -->
+    <header class="hero">
+        <div class="badge-row">
+            <span class="badge"><span class="dot"></span>ICLR 2025</span>
+            <span class="badge subtle">Video Captioning · Causal Reasoning</span>
+        </div>
+
+        <h1 class="hero-title">
+            <span class="emph">NarrativeBridge</span><span class="amp">:</span>
+            Enhancing Video Captioning with Causal-Temporal Narrative
+        </h1>
+
+        <p class="hero-sub">
+            A new approach to video captioning grounded in cause, effect, and time —
+            introducing the <em>Causal-Temporal Narrative</em> benchmark and the
+            <em>Cause-Effect Network</em> architecture.
+        </p>
+
+        <div class="hero-actions">
+            <a class="btn" href="https://github.com/asmarnadeem/NarrativeBridge" target="_blank" rel="noopener noreferrer" aria-label="Code on GitHub">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                Code
+            </a>
+            <a class="btn secondary" href="https://huggingface.co/narrativebridge/CEN" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Model Weights
+            </a>
+            <a class="btn secondary" href="https://huggingface.co/datasets/narrativebridge/MSRVTT-CTN" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+                MSRVTT-CTN
+            </a>
+            <a class="btn secondary" href="https://huggingface.co/datasets/narrativebridge/MSVD-CTN" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+                MSVD-CTN
+            </a>
+        </div>
+
+        <div class="rule-ornate" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+    </header>
+
+    <!-- ============ OVERVIEW ============ -->
+    <section id="overview">
+        <div class="section-eyebrow">§ I · Overview</div>
+        <h2>From frame descriptions to causal narrative.</h2>
+        <p class="lede">Existing video captioning benchmarks and models lack coherent representations of causal-temporal narrative, which is sequences of events linked through cause and effect, unfolding over time and driven by characters or agents. This lack of narrative restricts models' ability to generate text descriptions that capture the causal and temporal dynamics inherent in video content. To address this gap, we propose NarrativeBridge, an approach comprising of: (1) a novel Causal-Temporal Narrative (CTN) captions benchmark generated using a large language model and few-shot prompting, explicitly encoding cause-effect temporal relationships in video descriptions, evaluated automatically to ensure caption quality and relevance and validated through human evaluation; and (2) a dedicated Cause-Effect Network (CEN) architecture with separate encoders for capturing cause and effect dynamics independently, enabling effective learning and generation of captions with causal-temporal narrative. Extensive experiments demonstrate that CEN significantly outperforms state-of-the-art models, including fine-tuned vision-language models, and is more accurate in articulating the causal and temporal aspects of video content than the second best model (GIT): 17.88 and 17.44 CIDEr on the MSVD and MSR-VTT datasets, respectively. Cross-dataset evaluations further showcase CEN's strong generalization capabilities. The proposed framework understands and generates nuanced text descriptions with intricate causal-temporal narrative structures present in videos, addressing a critical limitation in video captioning.</p>
+    </section>
+
+    <!-- ============ TRY THE PROMPT ============ -->
+    <section id="try-the-prompt">
+        <div class="section-eyebrow">§ II · Few-shot Prompt</div>
+        <h2>Try the prompt.</h2>
+        <p>You can also try the example prompt used for CTN captions generation by visiting <a href="https://chat.mistral.ai/" target="_blank" rel="noopener noreferrer">this link</a>.</p>
+
+        <div class="prompt-shell">
+            <div class="prompt-head">
+                <div class="prompt-label">
+                    <span class="prompt-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+                    <span>ctn_prompt.txt</span>
+                </div>
+                <button class="copy-btn" id="copyBtn" type="button" aria-label="Copy prompt to clipboard">Copy</button>
+            </div>
+            <pre class="prompt-text" id="promptText">You are an advanced language model tasked with generating causal-temporal narrative captions for a video. However, you cannot directly access the video itself. Instead, you will be provided with a series of captions that outline the key events and scenes in the video. Your task is to generate a concise Cause and Effect scenario, based on the information provided in the descriptive captions. Be careful, your generated Cause and Effect statements should fulfill the following requirements: 
 1. Your narrative should be grounded in the information provided by the descriptive captions. 
 2. Cause and Effect scenario is relevant. 
 3. It should not introduce any new events or details not mentioned. 
@@ -264,309 +707,263 @@ Now please generate only one Cause and Effect presented in a JSON format based o
 19. 'crashing of a car while driving'
 20. 'footage from a monster truck style event followed by a frat party'
 [Causal Temporal Narrative]:</pre>
-                </div>
-            </section>
-            <section id="benchmark">
-                <h2>Download Benchmarks</h2>
-                <p>Our work introduces a novel benchmark for video captioning called Causal-Temporal Narrative (CTN) captions, generated using the LLM for popular datasets MSRVTT and MSVD.</p>
-                <ul>
-                    <li><a href="https://huggingface.co/datasets/narrativebridge/MSRVTT-CTN" target="_blank" rel="noopener noreferrer">Download MSRVTT-CTN Benchmark Dataset</a></li>
-                    <li><a href="https://huggingface.co/datasets/narrativebridge/MSVD-CTN" target="_blank" rel="noopener noreferrer">Download MSVD-CTN Benchmark Dataset</a></li>
-                </ul>
-                <p><strong>The MSRVTT-CTN and MSVD-CTN benchmark datasets are licensed under the Creative Commons Attribution Non Commercial No Derivatives 4.0 International (CC BY-NC-ND 4.0) license.</strong></p>
-            </section>
-            <section id="motivation">
-                <h2>Motivation</h2>
-                <figure>
-                    <img src="motivation_figure.png" alt="Comparison of original vs. Causal-Temporal Narrative (CTN) ground truth captions to illustrate the inclusion of causal-temporal narrative." aria-describedby="motivation-caption">
-                    <figcaption id="motivation-caption">Comparison of original vs. Causal-Temporal Narrative (CTN) ground truth captions to illustrate the inclusion of causal-temporal narrative.</figcaption>
-                </figure>
-            </section>
-            <section id="ctn_generation_pipeline">
-                <h2>CTN captions Benchmark Generation</h2>
-                <figure>
-                    <img src="caption_generation_pipeline.png" alt="CTN caption generation pipeline. θ indicates a threshold." aria-describedby="ctn_generation_pipeline-caption">
-                    <figcaption id="ctn_generation_pipeline-caption">CTN caption generation pipeline. θ indicates a threshold.</figcaption>
-                </figure>
-            </section>
-            <section id="ctn_llm_comparison">
-                <h2>Comparison of LLMs for CTN Caption Generation</h2>
-                <div class="video-container">
-                    <video width="560" height="315" controls>
-                        <source src="video_nb_llm_comp_gh.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-            </section>
-            <section id="evaluation">
-                <h2>Automatic Evaluation for CTN Caption Generation</h2>
-                <div class="video-container">
-                    <video width="560" height="315" controls>
-                        <source src="video_impact_eval_gh.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-            </section>
-            <section id="application-ctn">
-                <h2>Labeling Unlabeled Videos with CTN Captions Generation</h2>
-                <div class="video-container">
-                    <video width="560" height="315" controls>
-                        <source src="video_nb_ctn_unlabelled_gh.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-                <figure>
-                    <img src="ctn_generation_application.png" alt="CTN caption generation application." aria-describedby="ctn_generation_application">
-                    <figcaption id="ctn_generation_application">Our CTN caption generation approach can be effectively applied to label unlabeled videos. By extracting frames from an unlabeled video and generating image captions using a state-of-the-art model (e.g., GIT), we can create input for our LLM-based CTN caption generation pipeline. The LLM generates a coherent and contextually relevant CTN caption that captures the cause-effect relationships and temporal dynamics in the video, enabling accurate and informative labeling of unlabeled video content. This application demonstrates the versatility and effectiveness of our approach in streamlining the process of labeling large-scale video datasets and facilitating video understanding and retrieval tasks.</figcaption>
-                </figure>
-            </section>
-            <section id="architecture">
-                <h2>CEN Architecture</h2>
-                <figure>
-                    <img src="architecture_figure.png" alt="CEN Architecture." aria-describedby="architecture-caption">
-                    <figcaption id="architecture-caption">The two-stage Cause-Effect Network (CEN) architecture. Stage 1: Separate Cause (E<sub>cause</sub>) and Effect (E<sub>effect</sub>) video encoders, pretrained using CLIP-ViT, learn specialized video representations. Corresponding text encoders (T<sub>cause</sub> and T<sub>effect</sub>) encode the cause and effect portions of the CTN caption. Contrastive losses are applied to align the video and text embeddings. Stage 2: The learned cause and effect video features are encoded separately (Enc<sub>cause</sub> and Enc<sub>effect</sub>) and concatenated before being input to the decoder, which generates the final CTN caption.</figcaption>
-                </figure>
-            </section>
-            
-            <section id="results">
-                <h2>Quantitative Results</h2>
-                <table role="table" aria-label="Quantitative results table for MSVD and MSRVTT datasets" style="table-layout: fixed; width: 100%;">
-                    <thead>
-                        <tr>
-                            <th>Method</th>
-                            <th colspan="3" style="text-align: center;">MSVD</th>
-                            <th colspan="3" style="text-align: center;">MSRVTT</th>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th>R-L ↑</th>
-                            <th>C ↑</th>
-                            <th>S ↑</th>
-                            <th>R-L ↑</th>
-                            <th>C ↑</th>
-                            <th>S ↑</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr style="background-color: #f2f2f2;">
-                            <td>SEM-POS</td>
-                            <td>25.39</td>
-                            <td>37.16</td>
-                            <td>14.46</td>
-                            <td>20.11</td>
-                            <td>26.01</td>
-                            <td>12.09</td>
-                        </tr>
-                        <tr>
-                            <td>AKGNN</td>
-                            <td>25.11</td>
-                            <td>35.08</td>
-                            <td>14.55</td>
-                            <td>21.42</td>
-                            <td>25.90</td>
-                            <td>11.99</td>
-                        </tr>
-                        <tr style="background-color: #f2f2f2;">
-                            <td>GIT</td>
-                            <td>27.51</td>
-                            <td>45.63</td>
-                            <td>15.58</td>
-                            <td>24.51</td>
-                            <td>32.43</td>
-                            <td>13.70</td>
-                        </tr>
-                        <tr>
-                            <td>VideoLLaVA (Zero-shot)</td>
-                            <td>21.80</td>
-                            <td>30.55</td>
-                            <td>14.67</td>
-                            <td>19.33</td>
-                            <td>16.24</td>
-                            <td>12.49</td>
-                        </tr>
-                        <tr>
-                            <td>VideoLLaVA (LoRA FT)</td>
-                            <td>24.56</td>
-                            <td>34.98</td>
-                            <td>15.41</td>
-                            <td>21.21</td>
-                            <td>18.97</td>
-                            <td>13.28</td>
-                        </tr>
-                        <tr>
-                            <td>VideoLLaVA (Simple FT)</td>
-                            <td>25.61</td>
-                            <td>36.12</td>
-                            <td>16.09</td>
-                            <td>22.18</td>
-                            <td>19.98</td>
-                            <td>13.07</td>
-                        </tr>
-                        <tr style="background-color: #f2f2f2;">
-                            <td>ShareGPT4Video (Zero-shot)</td>
-                            <td>21.66</td>
-                            <td>27.06</td>
-                            <td>14.06</td>
-                            <td>20.27</td>
-                            <td>17.08</td>
-                            <td>12.21</td>
-                        </tr>
-                        <tr style="background-color: #f2f2f2;">
-                            <td>ShareGPT4Video (LoRA FT)</td>
-                            <td>24.39</td>
-                            <td>30.72</td>
-                            <td>14.83</td>
-                            <td>22.09</td>
-                            <td>19.83</td>
-                            <td>13.02</td>
-                        </tr>
-                        <tr style="background-color: #f2f2f2;">
-                            <td>ShareGPT4Video (Simple FT)</td>
-                            <td>25.32</td>
-                            <td>31.67</td>
-                            <td>14.92</td>
-                            <td>23.01</td>
-                            <td>20.76</td>
-                            <td>13.28</td>
-                        </tr>
-                        <tr style="background-color: #e6f7ff; font-weight: bold;">
-                            <td>CEN (Ours)</td>
-                            <td>31.46</td>
-                            <td>63.51</td>
-                            <td>19.25</td>
-                            <td>27.90</td>
-                            <td>49.87</td>
-                            <td>15.76</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <caption>Comparison of our CEN architecture against SOTA methods on the MSVD and MSR-VTT datasets. The best results in each category are highlighted. R-L, C, and S denote ROUGE-L, CIDEr, and SPICE scores, respectively. ↑ indicates higher is better.</caption>
-            </section>
-            <section id="qualitative-results">
-                <h2>Qualitative Results</h2>
-                <div class="video-container">
-                    <video width="560" height="315" controls>
-                        <source src="Video_nb_qualitative_gh.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-                <figure>
-                    <img src="qualitative_results.png" alt="Qualitative examples across scenarios like video games, paper folding, soccer, and singing. CEN (Ours) captions accurately capture causal narratives and temporal sequences from ground truth, outperforming SOTA video captioning methods." aria-describedby="qualitative-caption">
-                    <figcaption id="qualitative-caption">Qualitative examples across scenarios like video games, paper folding, soccer, and singing. CEN (Ours) captions accurately capture causal narratives and temporal sequences from ground truth, outperforming SOTA video captioning methods.</figcaption>
-                </figure>
-            </section>
-<!--             <section id="ablation-study">
-                <h2>Ablation Study</h2>
-                <table role="table" aria-label="Ablation study results table for MSVD and MSRVTT datasets" style="table-layout: fixed; width: 100%;">
-                    <thead>
-                        <tr>
-                            <th>Method</th>
-                            <th colspan="3" style="text-align: center;">MSVD</th>
-                            <th colspan="3" style="text-align: center;">MSRVTT</th>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th>ROUGE-L</th>
-                            <th>CIDEr</th>
-                            <th>SPICE</th>
-                            <th>ROUGE-L</th>
-                            <th>CIDEr</th>
-                            <th>SPICE</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Joint CE encoder</td>
-                            <td>30.93</td>
-                            <td>55.72</td>
-                            <td>17.04</td>
-                            <td>27.34</td>
-                            <td>45.97</td>
-                            <td>15.07</td>
-                        </tr>
-                        <tr>
-                            <td>Only <span aria-label="cause encoder">cause encoder</span></td>
-                            <td>30.72</td>
-                            <td>56.42</td>
-                            <td>18.43</td>
-                            <td>27.19</td>
-                            <td>47.10</td>
-                            <td>15.21</td>
-                        </tr>
-                        <tr>
-                            <td>Only <span aria-label="effect encoder">effect encoder</span></td>
-                            <td>30.70</td>
-                            <td>57.14</td>
-                            <td>17.89</td>
-                            <td>27.24</td>
-                            <td>45.58</td>
-                            <td>15.19</td>
-                        </tr>
-                        <tr>
-                            <td>Zero Shot v.v.</td>
-                            <td>27.16</td>
-                            <td>39.65</td>
-                            <td>14.45</td>
-                            <td>24.73</td>
-                            <td>29.76</td>
-                            <td>12.26</td>
-                        </tr>
-                        <tr>
-                            <td>Fine-tune v.v.</td>
-                            <td>31.78</td>
-                            <td>65.60</td>
-                            <td>19.39</td>
-                            <td>27.47</td>
-                            <td>47.74</td>
-                            <td>15.65</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <caption>Ablation study results on the MSVD and MSRVTT datasets. E<sub>JointCE</sub>, Only E<sub>cause</sub> and Only E<sub>effect</sub> are variants of our CEN architecture, while Zero Shot v.v. and Fine-tune v.v. represent cross-dataset evaluation settings. The best results in each category are in bold.</caption>
-            </section> -->
-            <section id="model-weights">
-                <h2>Model Weights</h2>
-                <p>Download the model weights from <a href="https://huggingface.co/narrativebridge/CEN" target="_blank" rel="noopener noreferrer">here</a>. We will release the code soon. </p>
-            </section>
         </div>
-    </main>
-    <footer role="contentinfo" style="text-align: center; padding: 20px; background-color: #4CAF50; color: white;">
-        <p>&copy; 2024 NarrativeBridge. All rights reserved.</p>
-    </footer>
-        <script>
-        function copyPrompt() {
-            const promptText = document.querySelector('.prompt-text').textContent;
-            navigator.clipboard.writeText(promptText)
-                .then(() => {
-                    alert('Prompt text copied to clipboard!');
-                })
-                .catch((err) => {
-                    console.error('Failed to copy prompt text: ', err);
-                });
-        }
-    </script>
-<!--     <div class="dynamic-content">
-        <div>
-<!--             <h3>Accessibility Features</h3>
-            <p>This website exhibits accessibility features.</p> -->
-<!--             <ul>
-                <li>Proper use of semantic HTML elements</li>
-                <li>Descriptive alt text for images</li>
-                <li>Accessible color contrast</li>
-                <li>Keyboard navigation support</li>
-                <li>ARIA roles and labels for better screen reader support</li>
-            </ul> -->
-<!--         </div> --> 
-<!--         <div>
-            <h3>Dynamic Content</h3>
-            <p>This section showcases dynamic content that can be updated or replaced with new information.</p>
-            <p>Example: Latest News or Updates</p>
-            <ul>
-                <li>New dataset release: </li>
-                <li>Upcoming conference: </li>
-                <li>Research paper accepted: </li>
-            </ul>
-        </div> -->
-<!--     </div> -->
+    </section>
+
+    <!-- ============ BENCHMARK DOWNLOAD ============ -->
+    <section id="benchmark">
+        <div class="section-eyebrow">§ III · Datasets</div>
+        <h2>Download benchmarks.</h2>
+        <p>Our work introduces a novel benchmark for video captioning called Causal-Temporal Narrative (CTN) captions, generated using the LLM for popular datasets MSRVTT and MSVD.</p>
+
+        <div class="callout-grid">
+            <a class="callout" href="https://huggingface.co/datasets/narrativebridge/MSRVTT-CTN" target="_blank" rel="noopener noreferrer">
+                <div class="callout-eyebrow">Benchmark · 01</div>
+                <div class="callout-title">
+                    MSRVTT-CTN
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                </div>
+                <div class="callout-sub">Causal-temporal captions for MSRVTT.</div>
+            </a>
+            <a class="callout" href="https://huggingface.co/datasets/narrativebridge/MSVD-CTN" target="_blank" rel="noopener noreferrer">
+                <div class="callout-eyebrow">Benchmark · 02</div>
+                <div class="callout-title">
+                    MSVD-CTN
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                </div>
+                <div class="callout-sub">Causal-temporal captions for MSVD.</div>
+            </a>
+        </div>
+
+        <p class="license-note"><strong>License.</strong> The MSRVTT-CTN and MSVD-CTN benchmark datasets are licensed under the Creative Commons Attribution Non Commercial No Derivatives 4.0 International (CC BY-NC-ND 4.0) license.</p>
+    </section>
+
+    <!-- ============ MOTIVATION ============ -->
+    <section id="motivation">
+        <div class="section-eyebrow">§ IV · Motivation</div>
+        <h2>Why narrative matters.</h2>
+        <figure>
+            <img src="motivation_figure.png" alt="Comparison of original vs. Causal-Temporal Narrative (CTN) ground truth captions to illustrate the inclusion of causal-temporal narrative.">
+            <figcaption>Comparison of original vs. Causal-Temporal Narrative (CTN) ground truth captions to illustrate the inclusion of causal-temporal narrative.</figcaption>
+        </figure>
+    </section>
+
+    <!-- ============ CTN GENERATION PIPELINE ============ -->
+    <section id="ctn_generation_pipeline">
+        <div class="section-eyebrow">§ V · Pipeline</div>
+        <h2>CTN captions benchmark generation.</h2>
+        <figure>
+            <img src="caption_generation_pipeline.png" alt="CTN caption generation pipeline. θ indicates a threshold.">
+            <figcaption>CTN caption generation pipeline. θ indicates a threshold.</figcaption>
+        </figure>
+    </section>
+
+    <!-- ============ LLM COMPARISON ============ -->
+    <section id="ctn_llm_comparison">
+        <div class="section-eyebrow">§ VI · Ablation</div>
+        <h2>Comparison of LLMs for CTN caption generation.</h2>
+        <div class="video-frame">
+            <video controls preload="metadata">
+                <source src="video_nb_llm_comp_gh.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </section>
+
+    <!-- ============ EVALUATION ============ -->
+    <section id="evaluation">
+        <div class="section-eyebrow">§ VII · Evaluation</div>
+        <h2>Automatic evaluation for CTN caption generation.</h2>
+        <div class="video-frame">
+            <video controls preload="metadata">
+                <source src="video_impact_eval_gh.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </section>
+
+    <!-- ============ CTN COMPARISON LINK (kept from original) ============ -->
+    <section id="ctn-effect-analysis">
+        <div class="section-eyebrow">§ VIII · Further analysis</div>
+        <h2>CTN effect analysis.</h2>
+        <p>Explore the full <a href="ctn_comparison.html">CTN Effect Analysis</a> for a detailed comparison.</p>
+    </section>
+
+    <!-- ============ APPLICATION ============ -->
+    <section id="application-ctn">
+        <div class="section-eyebrow">§ IX · Application</div>
+        <h2>Labeling unlabeled videos with CTN captions.</h2>
+        <div class="video-frame">
+            <video controls preload="metadata">
+                <source src="video_nb_ctn_unlabelled_gh.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <figure>
+            <img src="ctn_generation_application.png" alt="CTN caption generation application.">
+            <figcaption>Our CTN caption generation approach can be effectively applied to label unlabeled videos. By extracting frames from an unlabeled video and generating image captions using a state-of-the-art model (e.g., GIT), we can create input for our LLM-based CTN caption generation pipeline. The LLM generates a coherent and contextually relevant CTN caption that captures the cause-effect relationships and temporal dynamics in the video, enabling accurate and informative labeling of unlabeled video content. This application demonstrates the versatility and effectiveness of our approach in streamlining the process of labeling large-scale video datasets and facilitating video understanding and retrieval tasks.</figcaption>
+        </figure>
+    </section>
+
+    <!-- ============ ARCHITECTURE ============ -->
+    <section id="architecture">
+        <div class="section-eyebrow">§ X · Method</div>
+        <h2>CEN architecture.</h2>
+        <figure>
+            <img src="architecture_figure.png" alt="CEN Architecture.">
+            <figcaption>The two-stage Cause-Effect Network (CEN) architecture. <strong>Stage 1:</strong> Separate Cause (E<sub>cause</sub>) and Effect (E<sub>effect</sub>) video encoders, pretrained using CLIP-ViT, learn specialized video representations. Corresponding text encoders (T<sub>cause</sub> and T<sub>effect</sub>) encode the cause and effect portions of the CTN caption. Contrastive losses are applied to align the video and text embeddings. <strong>Stage 2:</strong> The learned cause and effect video features are encoded separately (Enc<sub>cause</sub> and Enc<sub>effect</sub>) and concatenated before being input to the decoder, which generates the final CTN caption.</figcaption>
+        </figure>
+    </section>
+
+    <!-- ============ QUANTITATIVE RESULTS ============ -->
+    <section id="results">
+        <div class="section-eyebrow">§ XI · Results</div>
+        <h2>Quantitative results.</h2>
+        <div class="table-wrap">
+            <table role="table" aria-label="Quantitative results table for MSVD and MSRVTT datasets">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th colspan="3">MSVD</th>
+                        <th colspan="3">MSR-VTT</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th>R-L ↑</th>
+                        <th>C ↑</th>
+                        <th>S ↑</th>
+                        <th>R-L ↑</th>
+                        <th>C ↑</th>
+                        <th>S ↑</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>SEM-POS</td>
+                        <td>25.39</td><td>37.16</td><td>14.46</td>
+                        <td>20.11</td><td>26.01</td><td>12.09</td>
+                    </tr>
+                    <tr>
+                        <td>AKGNN</td>
+                        <td>25.11</td><td>35.08</td><td>14.55</td>
+                        <td>21.42</td><td>25.90</td><td>11.99</td>
+                    </tr>
+                    <tr>
+                        <td>GIT</td>
+                        <td>27.51</td><td>45.63</td><td>15.58</td>
+                        <td>24.51</td><td>32.43</td><td>13.70</td>
+                    </tr>
+                    <tr>
+                        <td>VideoLLaVA (Zero-shot)</td>
+                        <td>21.80</td><td>30.55</td><td>14.67</td>
+                        <td>19.33</td><td>16.24</td><td>12.49</td>
+                    </tr>
+                    <tr>
+                        <td>VideoLLaVA (LoRA FT)</td>
+                        <td>24.56</td><td>34.98</td><td>15.41</td>
+                        <td>21.21</td><td>18.97</td><td>13.28</td>
+                    </tr>
+                    <tr>
+                        <td>VideoLLaVA (Simple FT)</td>
+                        <td>25.61</td><td>36.12</td><td>16.09</td>
+                        <td>22.18</td><td>19.98</td><td>13.07</td>
+                    </tr>
+                    <tr>
+                        <td>ShareGPT4Video (Zero-shot)</td>
+                        <td>21.66</td><td>27.06</td><td>14.06</td>
+                        <td>20.27</td><td>17.08</td><td>12.21</td>
+                    </tr>
+                    <tr>
+                        <td>ShareGPT4Video (LoRA FT)</td>
+                        <td>24.39</td><td>30.72</td><td>14.83</td>
+                        <td>22.09</td><td>19.83</td><td>13.02</td>
+                    </tr>
+                    <tr>
+                        <td>ShareGPT4Video (Simple FT)</td>
+                        <td>25.32</td><td>31.67</td><td>14.92</td>
+                        <td>23.01</td><td>20.76</td><td>13.28</td>
+                    </tr>
+                    <tr class="highlight">
+                        <td>CEN (Ours)</td>
+                        <td>31.46</td><td>63.51</td><td>19.25</td>
+                        <td>27.90</td><td>49.87</td><td>15.76</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="table-caption">Comparison of our CEN architecture against SOTA methods on the MSVD and MSR-VTT datasets. The best results in each category are highlighted. R-L, C, and S denote ROUGE-L, CIDEr, and SPICE scores, respectively. ↑ indicates higher is better.</div>
+    </section>
+
+    <!-- ============ QUALITATIVE RESULTS ============ -->
+    <section id="qualitative-results">
+        <div class="section-eyebrow">§ XII · Qualitative</div>
+        <h2>Qualitative results.</h2>
+        <div class="video-frame">
+            <video controls preload="metadata">
+                <source src="Video_nb_qualitative_gh.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <figure>
+            <img src="qualitative_results.png" alt="Qualitative examples across scenarios like video games, paper folding, soccer, and singing. CEN (Ours) captions accurately capture causal narratives and temporal sequences from ground truth, outperforming SOTA video captioning methods.">
+            <figcaption>Qualitative examples across scenarios like video games, paper folding, soccer, and singing. CEN (Ours) captions accurately capture causal narratives and temporal sequences from ground truth, outperforming SOTA video captioning methods.</figcaption>
+        </figure>
+    </section>
+
+    <!-- ============ MODEL WEIGHTS ============ -->
+    <section id="model-weights">
+        <div class="section-eyebrow">§ XIII · Release</div>
+        <h2>Model weights &amp; code.</h2>
+        <p>Download the model weights from <a href="https://huggingface.co/narrativebridge/CEN" target="_blank" rel="noopener noreferrer">Hugging Face</a>. The official CEN architecture code is available on <a href="https://github.com/asmarnadeem/NarrativeBridge" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
+
+        <div class="callout-grid">
+            <a class="callout" href="https://github.com/asmarnadeem/NarrativeBridge" target="_blank" rel="noopener noreferrer">
+                <div class="callout-eyebrow">Source · GitHub</div>
+                <div class="callout-title">
+                    asmarnadeem / NarrativeBridge
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                </div>
+                <div class="callout-sub">CEN Architecture · ICLR 2025.</div>
+            </a>
+            <a class="callout" href="https://huggingface.co/narrativebridge/CEN" target="_blank" rel="noopener noreferrer">
+                <div class="callout-eyebrow">Weights · Hugging Face</div>
+                <div class="callout-title">
+                    narrativebridge / CEN
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                </div>
+                <div class="callout-sub">Pretrained Cause-Effect Network checkpoint.</div>
+            </a>
+        </div>
+    </section>
+
+</main>
+
+<footer role="contentinfo">
+    <p>&copy; 2025 NarrativeBridge. All rights reserved.</p>
+</footer>
+
+<script>
+    // Copy prompt to clipboard
+    (function () {
+        const btn = document.getElementById('copyBtn');
+        const text = document.getElementById('promptText');
+        if (!btn || !text) return;
+        btn.addEventListener('click', function () {
+            navigator.clipboard.writeText(text.textContent).then(function () {
+                btn.textContent = 'Copied';
+                btn.classList.add('copied');
+                setTimeout(function () {
+                    btn.textContent = 'Copy';
+                    btn.classList.remove('copied');
+                }, 1600);
+            }).catch(function (err) {
+                console.error('Failed to copy:', err);
+                btn.textContent = 'Press Ctrl+C';
+                setTimeout(function () { btn.textContent = 'Copy'; }, 1800);
+            });
+        });
+    })();
+</script>
+
 </body>
 </html>
